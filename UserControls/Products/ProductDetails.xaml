@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="POS.ProductDetail"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+            <Border Grid.ColumnSpan="2" Background="{StaticResource OrangeLighten1Brush}" CornerRadius="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock  Margin="4" VerticalAlignment="Center" Foreground="White" FontSize="20" Text="{Binding Prod.ProductName,ValidatesOnDataErrors=True}"/>
+                    <Grid Grid.Column="1">
+                           <StackPanel HorizontalAlignment="Right" Margin="1"  Background="{StaticResource FontLightBrush}" Orientation="Horizontal">
+                    <Button Background="Transparent" Command="{Binding btnEdit}" Margin="2">
+                        <StackPanel>
+                            <Grid Width="38" Height="38">
+                                <Grid.Background>
+                                    <ImageBrush ImageSource="/Images/edit.png"/>
+                                </Grid.Background>
+                            </Grid>
+
+                        </StackPanel>
+                    </Button>
+                            <Button Background="Transparent" Command="{Binding deleteBtn}" Margin="2">
+                        <StackPanel>
+                            <Grid Width="38" Height="38">
+                                <Grid.Background>
+                                    <ImageBrush ImageSource="/Images/delete.png"/>
+                                </Grid.Background>
+                            </Grid>
+
+                        </StackPanel>
+                    </Button>
+                </StackPanel> 
+                    </Grid>
+                  
+                </Grid>
+     
+            </Border>
+            
+            <StackPanel Grid.Column="0" Grid.Row="1" Margin="4">
+                <TextBlock Text="{Binding ErrorForProduct}" Foreground="{StaticResource Danger}"/>
+                <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Name of product"/>
+                
+                <TextBlock  Foreground="{StaticResource OrangeDarken1Brush}" Text="Markup %"/>
+                <TextBlock Foreground="Gray" FontSize="18" Text="{Binding Prod.Markup}"/>
+                <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Quantity"/>
+                <TextBlock Foreground="Gray" FontSize="18" Text="{Binding Prod.Quantity}"/>
+                <TextBlock Text="Tatal Value " Foreground="{StaticResource OrangeDarken1Brush}" />
+                <TextBlock Text="{Binding Prod.Value}" Foreground="Gray" FontSize="18" VerticalAlignment="Bottom"/>
+                <TextBlock Text="Price/Unity "  Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBlock Text="{Binding Prod.pricePerUnit}"  Foreground="Gray" FontSize="18" VerticalAlignment="Bottom"/>
+    
+                <TextBlock Text="Category  "  Foreground="{StaticResource OrangeDarken1Brush}" />
+                <TextBlock Text="{Binding Prod.categoryName}"  Foreground="Gray" FontSize="18" VerticalAlignment="Bottom"/>
+            </StackPanel>
+
+            <StackPanel  Grid.Row="1" Grid.Column="1" Margin="4">
+                <TextBlock Foreground="{StaticResource OrangeDarken1Brush}"  Text="purchase Price"/>
+                <TextBlock Foreground="Gray" FontSize="18" Text="{Binding Prod.PurchasePrice}"/>
+                <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Manufacturer"/>
+                <TextBlock FontSize="18" Foreground="Gray" Text="{Binding Prod.Manufacturer}"/>
+                <TextBlock Foreground="{StaticResource OrangeDarken1Brush}"  Text="PCode"/>
+                <TextBlock Foreground="Gray" FontSize="18" Text="{Binding Prod.ProductCode}"/>
+                <TextBlock Text="Branch " Foreground="{StaticResource OrangeDarken1Brush}" />
+                    <TextBlock Text="{Binding Prod.BranchName}" Foreground="Gray" FontSize="18" VerticalAlignment="Bottom"/>
+
+
+                    <TextBlock Text="Last Updated By " Foreground="{StaticResource OrangeDarken1Brush}" />
+                    <TextBlock Text="{Binding Prod.CapturedBy}"  Foreground="Gray" FontSize="14" VerticalAlignment="Bottom"/>
+
+
+                    <TextBlock Text="Last update "  Foreground="{StaticResource OrangeDarken1Brush}" />
+                    <TextBlock Text="{Binding Prod.DateOfLastUpdate}"  Foreground="Gray" FontSize="18" VerticalAlignment="Bottom"/>
+
+            </StackPanel>
+
+  
+        </Grid>
+    </Grid>
+
+</UserControl>

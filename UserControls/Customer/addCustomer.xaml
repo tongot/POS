@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="POS.addCustomer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.ColumnSpan="2" Background="{StaticResource OrangeLighten1Brush}" CornerRadius="3">
+                <StackPanel HorizontalAlignment="Right" Margin="1" Background="{StaticResource FontLightBrush}" Orientation="Horizontal">
+                    <Button Background="Transparent" Command="{Binding btnSaveNew}" Margin="2">
+                        <StackPanel>
+                            <Grid Width="45" Height="45">
+                                <Grid.Background>
+                                    <ImageBrush ImageSource="/Images/save.png"/>
+                                </Grid.Background>
+                            </Grid>
+
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+            <StackPanel Grid.Column="0" Grid.Row="1" Margin="4">
+                <TextBlock Text="{Binding VmCustomer.textError}" Foreground="red"/>
+                <TextBlock Text="Name" Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBox Text="{Binding VmCustomer.Name}"/>
+                <TextBlock Text="Surname" Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBox Text="{Binding VmCustomer.Surname}"/>
+                <TextBlock Text="Age" Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBox Text="{Binding VmCustomer.Age}"/>
+                <TextBlock Text="Address" Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBox Text="{Binding VmCustomer.Address}"/>
+            </StackPanel>
+
+            <StackPanel  Grid.Row="1" Grid.Column="1" Margin="4">
+                <TextBlock Text="" Foreground="red"/>
+                <TextBlock Text="Phone Number" Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBox Text="{Binding VmCustomer.PhoneNumber}"/>
+                <TextBlock Text="National Id" Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBox Text="{Binding VmCustomer.nationalId}"/>
+                <TextBlock Text="Next Of Kin" Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBox Text="{Binding VmCustomer.NextOfKin}"/>
+                <TextBlock Text="Next Of Kin Contact" Foreground="{StaticResource OrangeDarken1Brush}"/>
+                <TextBox Text="{Binding VmCustomer.NextOfKinContact}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

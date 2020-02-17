@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28917.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POS", "POS.csproj", "{955CF0EE-9DFB-4C92-9975-98AE220BEF4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDatabase", "..\AppDatabase\AppDatabase.csproj", "{0F67AF78-9D2E-4F5C-BDF2-694A3AB0E28B}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SDistribution", "..\SDistribution\SDistribution.vdproj", "{8CBAB278-0DF2-4D13-A8C3-3916DE36AB7C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{955CF0EE-9DFB-4C92-9975-98AE220BEF4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{955CF0EE-9DFB-4C92-9975-98AE220BEF4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{955CF0EE-9DFB-4C92-9975-98AE220BEF4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{955CF0EE-9DFB-4C92-9975-98AE220BEF4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F67AF78-9D2E-4F5C-BDF2-694A3AB0E28B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F67AF78-9D2E-4F5C-BDF2-694A3AB0E28B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F67AF78-9D2E-4F5C-BDF2-694A3AB0E28B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F67AF78-9D2E-4F5C-BDF2-694A3AB0E28B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CBAB278-0DF2-4D13-A8C3-3916DE36AB7C}.Debug|Any CPU.ActiveCfg = Debug
+		{8CBAB278-0DF2-4D13-A8C3-3916DE36AB7C}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {82052ACB-7F6A-4CE6-B8C0-3248011D769F}
+	EndGlobalSection
+EndGlobal

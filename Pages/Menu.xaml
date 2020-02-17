@@ -1,0 +1,148 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:POS"
+      xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" xmlns:dxnav="http://schemas.devexpress.com/winfx/2008/xaml/navigation" x:Class="POS.Menu"
+      mc:Ignorable="d" 
+      Height="650" Width="660"
+      Background="{StaticResource OrangeLighten3Brush}"
+      Title="Menu">
+    <Grid>
+        <Grid Height="550" Width="600">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button Grid.Column="0" FontSize="25"  Background="{StaticResource OrangeLighten1Brush}"
+                    Command="{Binding toProducts}" Grid.Row="0" Margin="5"
+                    Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Products}"
+                    >
+                <StackPanel>
+                    <Grid Width="90" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/product.png"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="Products"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Grid.Column="0" Command="{Binding toEmployees}"
+                    Background="{StaticResource OrangeLighten1Brush}" 
+                    FontSize="25" Grid.Row="1" Margin="5">
+                <StackPanel HorizontalAlignment="Left">
+                    <Grid Width="100" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/employee.png"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="Employees"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toSettings}"
+                    Grid.Column="0" FontSize="25" Grid.Row="2" Margin="5"
+                     Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Settings}"
+                    >
+                <StackPanel>
+                    <Grid Width="95" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/setting.png"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="Settings"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toSales}" Grid.Column="1" 
+                    FontSize="25" Grid.Row="0" Margin="5"
+                    Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Sales}"
+                    >
+                <StackPanel>
+                    <Grid Width="90" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/sales.png"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="Sales"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Background="{StaticResource OrangeLighten1Brush}" Grid.Column="1"  Command="{Binding toPos}" 
+                    FontSize="25" Grid.Row="1" Margin="5"
+                    Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Pos}"
+                    >
+                <StackPanel>
+                    <Grid Width="100" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/till.jpg"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="POS"/></TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toCustomer}" Grid.Column="1" 
+                    FontSize="25" Grid.Row="2" Margin="5"
+                     Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Customer}"
+                    
+                    >
+                <StackPanel>
+                    <Grid Width="70" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/buy-clipart-customer-buying-6-original.png"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="Customer"/></TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toBranches}" 
+                    Grid.Column="2" FontSize="25" Grid.Row="0" Margin="5"
+                    Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Branches}"
+                    >
+                <StackPanel>
+                    <Grid Width="70" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/buy-clipart-customer-buying-6-original.png"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="Branches"/></TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toCategories}" 
+                    Grid.Column="2" FontSize="25" Grid.Row="1" Margin="5"
+                    Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Categories}"
+                    >
+                <StackPanel>
+                    <Grid Width="70" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/buy-clipart-customer-buying-6-original.png"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="Categories"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <!---->
+    </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,64 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:POS"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <Color x:Key="Orange">#FF9800</Color>
+    <SolidColorBrush x:Key="OrangeBrush" Color="{StaticResource Orange}"></SolidColorBrush>
+
+    <Color x:Key="OrangeLighten5">#FFF3E0</Color>
+    <SolidColorBrush x:Key="OrangeLighten5Brush" Color="{StaticResource OrangeLighten5}"></SolidColorBrush>
+
+    <Color x:Key="OrangeLighten4">#FFE0B2</Color>
+    <SolidColorBrush x:Key="OrangeLighten4Brush" Color="{StaticResource OrangeLighten4}"></SolidColorBrush>
+
+    <Color x:Key="OrangeLighten3">#FFCC80</Color>
+    <SolidColorBrush x:Key="OrangeLighten3Brush" Color="{StaticResource OrangeLighten3}"></SolidColorBrush>
+
+    <Color x:Key="OrangeLighten2">#FFB74D</Color>
+    <SolidColorBrush x:Key="OrangeLighten2Brush" Color="{StaticResource OrangeLighten2}"></SolidColorBrush>
+
+    <Color x:Key="OrangeLighten1">#FFA726</Color>
+    <SolidColorBrush x:Key="OrangeLighten1Brush" Color="{StaticResource OrangeLighten1}"></SolidColorBrush>
+
+    <Color x:Key="OrangeDarken1">#FB8C00</Color>
+    <SolidColorBrush x:Key="OrangeDarken1Brush" Color="{StaticResource OrangeDarken1}"></SolidColorBrush>
+
+    <Color x:Key="OrangeDarken2">#F57C00</Color>
+    <SolidColorBrush x:Key="OrangeDarken2Brush" Color="{StaticResource OrangeDarken2}"></SolidColorBrush>
+
+    <Color x:Key="LightText">#616161</Color>
+    <SolidColorBrush x:Key="LightTextBrush" Color="{StaticResource LightText}"></SolidColorBrush>
+
+
+    <Color x:Key="OrangeDarken3">#EF6C00</Color>
+    <SolidColorBrush x:Key="OrangeDarken3Brush" Color="{StaticResource OrangeDarken3}"></SolidColorBrush>
+
+    <Color x:Key="OrangeDarken4">#E65100</Color>
+    <SolidColorBrush x:Key="OrangeDarken4Brush" Color="{StaticResource OrangeDarken4}"></SolidColorBrush>
+
+
+    <!--fonts-->
+    <FontFamily x:Key="GlobalFont">Calibri</FontFamily>
+
+    <Color x:Key="FontLight">#ffff</Color>
+    <SolidColorBrush x:Key="FontLightBrush" Color="{StaticResource FontLight}"></SolidColorBrush>
+
+    <Color x:Key="FontDark">#000</Color>
+    <SolidColorBrush x:Key="FontDarkBrush" Color="{StaticResource FontDark}"></SolidColorBrush>
+
+    <Color x:Key="PrimaryBrush">#3d8cc3</Color>
+    <SolidColorBrush x:Key="Primary" Color="{StaticResource PrimaryBrush}"></SolidColorBrush>
+
+    <Color x:Key="DangerBrush">#da2d2d</Color>
+    <SolidColorBrush x:Key="Danger" Color="{StaticResource DangerBrush}"></SolidColorBrush>
+
+    <Color x:Key="WarnigBrush">#e6ce64</Color>
+    <SolidColorBrush x:Key="Warning" Color="{StaticResource WarnigBrush}"></SolidColorBrush>
+
+    <Color x:Key="SuccessBrush">#8ebb59</Color>
+    <SolidColorBrush x:Key="Success" Color="{StaticResource SuccessBrush}"></SolidColorBrush>
+
+    <system:Double x:Key="FontTextBox">16</system:Double>
+    
+
+</ResourceDictionary>

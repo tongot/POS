@@ -1,0 +1,181 @@
+﻿<Page x:Class="POS.PosSale"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:POS"
+      mc:Ignorable="d" 
+      d:DesignWidth="1100"
+      Title="PosSale"
+      Loaded="Page_Loaded"
+      >
+    <Page.InputBindings>
+        <KeyBinding Key="F12" Command="{Binding BtnSearchProduct}">
+        </KeyBinding>
+        <KeyBinding Key="F10" Command="{Binding btnEnter}">
+        </KeyBinding>
+        <KeyBinding Key="F7" Command="{Binding voidBtn}"/>
+        <KeyBinding Key="F8" Command="{Binding holdBtn}"/>
+    </Page.InputBindings>
+    <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+        <Grid>
+            <StackPanel Orientation="Horizontal">
+                <Button Background="Transparent" Grid.Column="0" FontSize="25" Command="{Binding ExitBtn}" Grid.Row="0" Margin="5">
+                    <StackPanel>
+                        <Grid Width="70" Height="70">
+                            <Grid.Background>
+                                <ImageBrush ImageSource="/Images/home.png"/>
+                            </Grid.Background>
+                        </Grid>
+
+                    </StackPanel>
+                </Button>
+                <TextBlock FontFamily="{StaticResource GlobalFont}" Text="POS" Foreground="{StaticResource OrangeLighten1Brush}"
+                           Margin="10 0 0 0" FontSize="40" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <DockPanel Grid.Row="1" HorizontalAlignment="Left">
+
+            <Grid MaxHeight="800" MaxWidth="820">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                        <Button Command="{Binding btnSetCustomerView}" Content="Set Cusomer" Margin="12 0" VerticalAlignment="Top"
+                        FontSize="15" Width="390" Height="30" Background="{StaticResource OrangeLighten1Brush}" Foreground="{StaticResource FontLightBrush}"/>
+                    </StackPanel>
+                    <Grid Grid.Row="1" Visibility="{Binding hideCustomerView, Converter={local:visibilityConverter}}">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <GroupBox Grid.Row="1" Header="Barcode reader">
+
+                            <StackPanel>
+                                <StackPanel Margin="10 0 0 0" Orientation="Horizontal">
+                                    <TextBox Text="{Binding textBoxBarcode,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="320" x:Name="BarCodeSearch"/>
+                                    <Button Background="Transparent" 
+                                Visibility="{Binding btnSearchVisibility, Converter={local:visibilityConverter}}" 
+                                Command="{Binding BtnSearchProduct}"
+                                Margin="2">
+                                        <StackPanel>
+                                            <Grid Width="38" Height="38">
+                                                <Grid.Background>
+                                                    <ImageBrush ImageSource="/Images/search.png"/>
+                                                </Grid.Background>
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                                <Button Command="{Binding viewHoldTransaction}" Margin="2" Content="view hold" FontSize="20" Height="30" Background="Transparent"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!--list box of  items to pay-->
+                        <ScrollViewer Grid.Row="2" Visibility="{Binding ListOfProductToPay,Converter={local:visibilityConverter}}">
+                            <ItemsControl x:Name="ListSale" ItemsSource="{Binding vmPOS.Cart}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:ChartItem></local:ChartItem>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <!--search view-->
+                        <Grid Height="300" Grid.Row="2">
+                            <local:ListOfProductPos  Visibility="{Binding SearchProductList,Converter={local:visibilityConverter}}" Grid.Column="1">
+                                <local:ProductPosListControl/>
+                            </local:ListOfProductPos>
+                        </Grid>
+
+
+
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <GroupBox  Grid.ColumnSpan="2" Header="Total Amount">
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                    <TextBlock Text="P" FontSize="25" FontWeight="Bold"  VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding vmPOS.totalPrice,FallbackValue=10000.34}" FontSize="25" FontWeight="Bold" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </GroupBox>
+                            <Button Command="{Binding BtnPay}" Grid.Column="2" Margin="2" Background="{StaticResource Primary}" Content="Pay" FontSize="30" MinHeight="35" MinWidth="50"/>
+                            <GroupBox  Grid.ColumnSpan="3" Grid.Row="1" Header="Change">
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                    <TextBlock Text="P" FontSize="25" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding vmPOS.change,FallbackValue=10000.34}" FontSize="25" FontWeight="Bold"  Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                        </Grid>
+
+                    </Grid>
+                    <Grid Grid.Row="2" Visibility="{Binding hideProductView, Converter={local:visibilityConverter}}">
+                        <local:SelectCustomer></local:SelectCustomer>
+                    </Grid>
+                </Grid>
+                <local:KeyPad Grid.Column="1" x:Name="KeyPad"></local:KeyPad>
+               
+            </Grid>
+            <Border Width="250" Visibility="{Binding passBoxShow, Converter={local:visibilityConverter}}">
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="{Binding adminLogError}" Foreground="{StaticResource Danger}"/>
+                    <Grid Margin="5 0 0 0" Height="50" HorizontalAlignment="Left" Width="50">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/Lock3.png"></ImageBrush>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock FontWeight="Bold" FontFamily="Calibri" HorizontalAlignment="left" FontSize="20" Margin="5 0 0 0" >
+                Admin username
+                    </TextBlock>
+                    <TextBox x:Name="username" FontSize="16" Text="{Binding username}" 
+                     Height="40" Background="White"
+                     BorderBrush="Gray" BorderThickness="1"
+                     TextAlignment="Left" VerticalContentAlignment="Center">
+                    </TextBox>
+                    <TextBlock FontWeight="Bold"  FontFamily="Calibri" HorizontalAlignment="Left" FontSize="20" Margin="5 0 0 0" >
+                Password
+                    </TextBlock>
+                    <PasswordBox Margin="4 0 4 0"  x:Name="passBox" Height="40"
+                          VerticalContentAlignment="Center"
+                         >
+
+                    </PasswordBox>
+                    <Button Height="40" Command="{Binding authoriseVoid}" 
+                            CommandParameter="{Binding ElementName=passBox}" 
+                            HorizontalAlignment="Right" FontSize="20" 
+                            Background="{StaticResource Success}" Width="100" Margin="4">
+                        Enter
+                    </Button>
+                </StackPanel>
+            </Border>
+        </DockPanel>
+    </Grid>
+   
+</Page>

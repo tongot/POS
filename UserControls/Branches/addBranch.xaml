@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="POS.addBranch"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Background="{StaticResource OrangeLighten1Brush}" CornerRadius="3">
+            <StackPanel HorizontalAlignment="Right" Margin="1" Background="{StaticResource FontLightBrush}" Orientation="Horizontal">
+                <Button Background="Transparent" Command="{Binding btnSaveNew}" Margin="2">
+                    <StackPanel>
+                        <Grid Width="45" Height="45">
+                            <Grid.Background>
+                                <ImageBrush ImageSource="/Images/save.png"/>
+                            </Grid.Background>
+                        </Grid>
+
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+        <StackPanel Margin="3" Grid.Row="2">
+            <TextBlock Text="{Binding VmBranch.textError}" Foreground="Red" />
+            <TextBlock Text="Name of Branch"/>
+            <TextBox Text="{Binding VmBranch.Name}"/>
+            <TextBlock Text="Location/region"/>
+            <TextBox Text="{Binding VmBranch.Region}"/>
+            <TextBlock Text="Manager"/>
+            <ComboBox ItemsSource="{Binding Path=VmBranch.Employees}" 
+                      SelectedItem="{Binding Path=VmBranch.Employee}"
+                      DisplayMemberPath="FullName"/>
+            <Grid Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                                        Converter={local:RolesViewConveter}, 
+                                        ConverterParameter=Create}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Height="40" Margin="2" FontSize="20" Command="{Binding addBranch}" Grid.Column="0" Content="Add" Grid.Row="0"/>
+                <Button  Height="40" Margin="2" FontSize="20"  Command="{Binding btnCancel}" Grid.Column="2" Content="Cancel" Grid.Row="0"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

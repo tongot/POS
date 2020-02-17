@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="POS.SelectCustomer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition MaxHeight="400"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Margin="10 0 0 0" Orientation="Horizontal">
+                <TextBox Text="{Binding vmPOS.searchCustomer}" Width="320"/>
+                <Button Background="Transparent" 
+                                 
+                                Command="{Binding btnSeachCustomer}"
+                                Margin="2">
+                    <StackPanel>
+                        <Grid Width="38" Height="38">
+                            <Grid.Background>
+                                <ImageBrush ImageSource="/Images/search.png"/>
+                            </Grid.Background>
+                        </Grid>
+
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding vmPOS.customers}" x:Name="mainView">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel >
+                            <Button Padding="4"
+                                    Margin="2"
+                                    Background="{StaticResource Warning}" 
+                                    Content="{Binding CustomerFullName, 
+                                    FallbackValue='Test Test'}" 
+                                    Command="{Binding ElementName=mainView, Path=DataContext.btnSetCustomer}"
+                                    CommandParameter="{Binding CustomerId}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

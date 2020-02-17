@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:POS">
+    <ControlTemplate x:Key="errorTemplate">
+        <Border BorderBrush="OrangeRed" BorderThickness="2">
+            <Grid>
+                <AdornedElementPlaceholder/>
+                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="OrangeRed" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 4 0"/>
+            </Grid>
+        </Border>
+    </ControlTemplate>
+</ResourceDictionary>

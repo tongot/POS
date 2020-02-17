@@ -1,0 +1,28 @@
+﻿<Window x:Class="POS.DialogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:POS"
+        mc:Ignorable="d"
+        Title="DialogWindow" Height="210" Width="500"
+        WindowStartupLocation="CenterScreen" WindowStyle="None"
+        >
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Message, FallbackValue='Erro here'}"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="4">
+                <Button Content="Ok" Margin="4" Foreground="{StaticResource FontLightBrush}" Width="100" Command="{Binding OkCommand}"
+                        Background="{StaticResource Success}"
+                        ></Button>
+                <Button Content="Cancel" Margin="4" Width="100" Foreground="{StaticResource FontLightBrush}" Command="{Binding CancelCommand}"
+                        Background="{StaticResource Danger}"
+                        ></Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

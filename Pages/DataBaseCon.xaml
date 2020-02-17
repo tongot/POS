@@ -1,0 +1,55 @@
+﻿<Page x:Class="POS.DataBaseCon"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:POS"
+      mc:Ignorable="d" 
+      Height="auto" Width="400"
+      Title="DataBaseCon">
+
+    <Grid>
+        <GroupBox>
+            <StackPanel>
+                <TextBlock Text="{Binding Error}" Foreground="Red"/>
+                <GroupBox Header="Data Source">
+                    <StackPanel>
+                        <TextBox FontSize="14" Text="{Binding DataSource}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Initial Catalog">
+                    <StackPanel>
+                        <TextBox FontSize="14" Text="{Binding InitialCatalog}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Pooling">
+                    <StackPanel>
+                        <ComboBox SelectedItem="{Binding Pooling}" ItemsSource="{Binding poolops}">
+                        </ComboBox>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="User ID">
+                    <StackPanel>
+                        <TextBox FontSize="14" Text="{Binding UserID}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Password">
+                    <StackPanel>
+                        <PasswordBox x:Name="passBox"/>
+                    </StackPanel>
+                </GroupBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Command="{Binding btnTestConnection}" Content="Connect" Height="35" Background="{StaticResource Primary}" Margin="2"/>
+                    <Button Content="Save" CommandParameter="{Binding ElementName=passBox}" Command="{Binding btnSaveConnection}" Grid.Column="1" Height="35" Background="{StaticResource Warning}" Margin="2"/>
+                    <Button Content="Exit"  Command="{Binding btnExit}" Grid.Column="2" Height="35" Background="{StaticResource Danger}" Margin="2"/>
+
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Page>
