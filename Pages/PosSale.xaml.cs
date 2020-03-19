@@ -13,20 +13,20 @@ namespace POS
         public PosSale()
         {
             InitializeComponent();
-            DataContext = new KeyPadViewModel();
+            //DataContext = new KeyPadViewModel();
             Focus();
         }
 
         private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             
-            IRequestFocus focus = (IRequestFocus)DataContext;
+            //IRequestFocus focus = (IRequestFocus)DataContext;
             IPrintReceipt receipt = (IPrintReceipt)DataContext;
-            focus.FocusRequested += Focus_FocusRequested;
+           // focus.FocusRequested += Focus_FocusRequested;
             receipt.printOutReciept += Receipt_printOutReciept;
         }
         List<POSProduct> Cart = new List<POSProduct>();
-        double totalPrice,change;
+        decimal totalPrice,change;
         string teller;
         string refnumber;
 
@@ -82,7 +82,7 @@ namespace POS
             {
                 item.ProductName = item.ProductName + " X" + item.quantity;
 
-                double roundup = item.ProductName.Length / 24d;
+                float roundup = item.ProductName.Length / 24f;
                 double numberOfLine = Math.Ceiling(roundup);
                 if (numberOfLine > 1)
                 {
@@ -131,27 +131,27 @@ namespace POS
 
         }
 
-        private void Focus_FocusRequested(object sender, FocusRequestedEventArgs e)
-        {
-            switch(e.PropertyName)
-            {
-                case "textBoxString":
-                    KeyPad.keyPadButtons.TextBoxPad.Focus();
-                    KeyPad.keyPadButtons.TextBoxPad.SelectAll();
-                    break;
-                case "textBoxBarcode":
-                    BarCodeSearch.Focus();
-                    BarCodeSearch.SelectAll();
-                    break;
-                case "sale":
-                    KeyPad.btnSale.Focus();
-                    break;
-                case "password":
-                    username.Focus();
-                    username.SelectAll();
-                    break;
+        //private void Focus_FocusRequested(object sender, FocusRequestedEventArgs e)
+        //{
+        //    switch(e.PropertyName)
+        //    {
+        //        case "textBoxString":
+        //            KeyPad.keyPadButtons.TextBoxPad.Focus();
+        //            KeyPad.keyPadButtons.TextBoxPad.SelectAll();
+        //            break;
+        //        case "textBoxBarcode":
+        //            BarCodeSearch.Focus();
+        //            BarCodeSearch.SelectAll();
+        //            break;
+        //        case "sale":
+        //            KeyPad.btnSale.Focus();
+        //            break;
+        //        case "password":
+        //            username.Focus();
+        //            username.SelectAll();
+        //            break;
 
-            }
-        }
+        //  }
+       // }
     }
 }

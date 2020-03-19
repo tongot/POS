@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="POS.addNewStock"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="800">
+    <Grid>
+        <Border BorderBrush="{StaticResource OrangeLighten1Brush}" 
+                Padding="4" CornerRadius="4"
+                BorderThickness="0.6" Margin="10">
+             <Grid Grid.Row="1" Grid.Column="1">
+                
+                <StackPanel > 
+                    
+                    <Button Content="X" Command="{Binding btn_CloseNewStock}" 
+                        Padding="10" Background="{StaticResource Danger}"
+                        Foreground="{StaticResource FontLightBrush}"
+                        HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding errors}" Foreground="{StaticResource Danger}"/>
+               
+
+                 <GroupBox Header="Purchase Price">
+                    <StackPanel>
+                        <TextBox Text="{Binding purchase_price,  UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </GroupBox> 
+                
+                <GroupBox Header="Markup">
+                    <StackPanel>
+                        <TextBox Text="{Binding mark_up,  UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </GroupBox>
+                
+                <GroupBox Header="Quantity">
+                    <StackPanel>
+                        <TextBox Text="{Binding quantity,  UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </GroupBox>
+              
+                <GroupBox Header="Goods value">
+                    <StackPanel>
+                        <TextBox IsEnabled="False" Text="{Binding  total_value,Mode=TwoWay, 
+                            UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Price">
+                    <StackPanel>
+                        <TextBox Text="{Binding price,  UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False"/>
+                    </StackPanel>
+                </GroupBox>
+           
+                <GroupBox Header="Select Branch">
+                    <ComboBox ItemsSource="{Binding Path=Prod.branches}" SelectedItem="{Binding Path=branch}" DisplayMemberPath="Name"/>
+                </GroupBox>
+                    <Button Content="Save" Command="{Binding btn_SaveNewStock}" Height="30"
+                        Foreground="{StaticResource FontLightBrush}" FontSize="20"
+                        />
+            </StackPanel>
+
+        </Grid>
+        </Border>
+       
+    </Grid>
+</UserControl>

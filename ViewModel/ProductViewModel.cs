@@ -2,8 +2,10 @@
 using Ninject;
 using POS.Ioc;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Windows.Input;
 
 namespace POS
@@ -11,11 +13,12 @@ namespace POS
     public class ProductViewModel : BaseViewModel
     {
         #region private propertiet
-        //if update set to 1 update quantity to increase if -1 decrease quantity
-        private static int update = 1;
+
         //intitial number of items per page
         int CurrentPageSet = 0;
         private readonly IDialogService dialogService;
+        IStock dbs = new StockApp();
+
         #endregion
         #region commands
         public ICommand saveProduct { set; get; }
@@ -37,10 +40,146 @@ namespace POS
         public ICommand filterVisibleBtn { get; set; }
         public ICommand btnEdit { get; set; }
         public ICommand btnAdd { get; set; }
-
+        public ICommand btn_showstock { get; set; }
+        public ICommand btn_showstockclose { get; set; }
+        public ICommand btn_AddNewStock { get; set; }
+        public ICommand btn_CloseNewStock { get; set; }
+        public ICommand btn_SaveNewStock { get; set; }
+        public ICommand btn_get_stockdetail { get; set; }
 
         #endregion
         #region public properties
+        #region stock managment
+        public ObservableCollection<stock> stocks { get; set; }
+        public stock stock_item { get; set; } = new stock();
+        public stock stocks_detail { get; set; }
+        public string errors { get; set; } = "";
+
+        public decimal price { get; set; }
+        public decimal purchase_price { get; set; }
+        public decimal is_selected { get; set; }
+        public decimal stock_id { get; set; }
+
+        int _quantity;
+        public int quantity {
+            get
+            {
+                return _quantity;
+            }
+            set
+            {
+                if(_quantity!= value)
+                {
+                    _quantity = value;
+                    total_value = price * _quantity;
+                }
+            }
+        }
+        public decimal total_value { get; set; }
+        decimal _mark_up;
+        public decimal mark_up {
+            get
+            {
+                return _mark_up;
+            }
+            set
+            {
+                if(_mark_up!= value)
+                {
+                    _mark_up = value;
+                    price = purchase_price +(_mark_up / 100 * purchase_price);
+                }
+            }
+        }
+        private void addNewStock()
+        {
+            errors = ValidateNewStock(this);
+            if (!string.IsNullOrEmpty(errors))
+            {
+                return;
+            }
+
+            Stock new_stock  = new Stock();
+
+            new_stock.date_of_stock = DateTime.Now;
+            new_stock.ProductId = Prod.ProductId;
+            new_stock.BranchId = branch.BranchId;
+            new_stock.price = price;
+            new_stock.markup = mark_up;
+            new_stock.is_running_stock = false;
+            new_stock.purchase_price = purchase_price;
+            new_stock.quantity =quantity;
+            new_stock.total_value = total_value;
+            new_stock.current_running_stock = quantity;
+            new_stock.batch_number = stockBatchNo();
+
+            dbs.addNewStock(new_stock);
+            Prod.updateProductStockUp(new_stock.ProductId, new_stock.quantity, new_stock.total_value);
+            showStockbtn();
+
+        }
+        string stockBatchNo()
+        {
+            string batch = "B" + DateTime.Now.Day + DateTime.Now.Month + DateTime.Now.Year + DateTime.Now.Hour + DateTime.Now.Minute + DateTime.Now.Second;
+            return batch;
+        }
+        public string ValidateNewStock(ProductViewModel prod)
+        {
+           var Errors = new StringBuilder();
+            decimal markup,purchasePrice;
+            int quantity_;
+       
+            if (branch.BranchId==0)
+            {
+                Errors.Append("*Branch Name is a required field\n");
+            }
+            if (decimal.TryParse(purchase_price.ToString(), out purchasePrice))
+            {
+                if (purchase_price <= 0.01m)
+                {
+                    Errors.Append("*purchase price must be greater than 0\n");
+                }
+            }
+            else
+            {
+                Errors.Append("*Invalid purchase price\n");
+            }
+            if (int.TryParse(quantity.ToString(), out quantity_))
+            {
+                if (quantity < 1)
+                {
+                    Errors.Append("*quantity must be greater than 1\n");
+                }
+            }
+            else
+            {
+                Errors.Append("*Invalid Quantity\n");
+            }
+            if (decimal.TryParse(mark_up.ToString(), out markup))
+            {
+                if (mark_up == 0)
+                {
+                    Errors.Append("*mark up must not be 0");
+                }
+            }
+            else
+            {
+                Errors.Append("*Invalid Purchase Price\n");
+            }
+            return Errors.ToString();
+
+
+        }
+        private void getBatchdetail(object obj)
+        {
+            stocks_detail.is_selected = false;
+            stocks_detail = stocks.Where(x => x.stock_id == (Guid)obj).FirstOrDefault();
+            stocks_detail.is_selected = true;
+
+            stock_details = true;
+            stock_addNew = false;
+        }
+        #endregion
         public VmProduct Prod { get; set; } = new VmProduct();
         public VmProduct EditProduct { get; set; } = new VmProduct();
         public VmCategory category { get; set; } = new VmCategory();
@@ -50,7 +189,7 @@ namespace POS
         public string stockChangeError { get; set; }
         public string ErrorForProduct { get; set; }
         
-        public double valueOfgoods { get; set; }
+        public decimal valueOfgoods { get; set; }
         public int quantityOfGoods { get; set; }
         
         #region filters values
@@ -60,7 +199,6 @@ namespace POS
         #endregion
 
         #region view behaviour
-        public bool restockVisible { get; set; } = false;
         public bool sideBarVisible { get; set; } = false;
         public bool addBtnVisible { get; set; } = false;
         public bool editBtnVisible { get; set; } = false;
@@ -70,6 +208,10 @@ namespace POS
         public bool showDetails { get; set; } = false;
         public bool showEdit { get; set; } = false;
         public bool showAdd { get; set; } = false;
+        public bool showStock { get; set; } = false;
+        public bool stock_details { get; set; } = true;
+        public bool stock_addNew { get; set; } = false;
+
         #endregion    
         #endregion
         #region constractor  
@@ -81,11 +223,7 @@ namespace POS
             #region relay command intialisation
             saveProduct = new RelayCommand(AddProduct);
             backHome = new RelayCommand(home);
-            restockBtn = new RelayCommand(restock);
-            destockBtn = new RelayCommand(destock);
-            UpdateQuantity = new RelayCommand(updateQnty);
             setUpdateProductbtn = new RelayCommand(setupadateProduct);
-            addProd = new RelayCommand(addProdView);
             updateProductBtn = new RelayCommand(postUpdate);
             setPerPageBtn = new RelayCommand(setPerPage);
             nextPageBtn = new RelayCommand(NextPage);
@@ -98,13 +236,29 @@ namespace POS
             deleteBtn = new RelayCommand(delete);
             btnEdit = new RelayCommand(setProductForUpdate);
             btnAdd = new RelayCommand(addNew);
-
+            btn_showstock = new RelayCommand(showStockbtn);
+            btn_showstockclose = new RelayCommand(closeStock);
+            btn_CloseNewStock = new RelayCommand(closeNewStock);
+            btn_AddNewStock = new RelayCommand(openNewStock);
+            btn_SaveNewStock = new RelayCommand(addNewStock);
+            btn_get_stockdetail = new RelayCommand(getBatchdetail);
 
         #endregion
-    }
+        }
     #endregion
     #region methods
+        private void closeNewStock()
+        {
+            stock_details = true;
+            stock_addNew = false;
 
+        }
+        private void openNewStock()
+        {
+            stock_details = false;
+            stock_addNew = true;
+            renewObj();
+        }
         void Initialise()
         {
             showDetails = false;
@@ -152,6 +306,7 @@ namespace POS
             showAdd = true;
             showEdit = false;
             showDetails = false;
+            showStock = false;
         }
     /// <summary>
     /// method to post a new product
@@ -160,15 +315,14 @@ namespace POS
         {
 
             //find if branches are selected
-            if (category.categoryId <= 0 | branch.BranchId <= 0)
+            if (category.categoryId <= 0 )
             {
-                ErrorForProduct = "Category or Branch are not selected";
+                ErrorForProduct = "Please select Category";
                 return;
             }
             //set selected
             Prod.CategoryId = category.categoryId;
             Prod.categoryName = category.Name;
-            Prod.BranchId = branch.BranchId;
             Prod.BranchName = branch.Name;
             //set date ofEdit
             Prod.DateOfLastUpdate = DateTime.Now;
@@ -182,6 +336,7 @@ namespace POS
                 showAdd = false;
                 showEdit = false;
                 showDetails = true;
+                showStock = false;
                 Initialise();
                 return;
             }
@@ -193,118 +348,25 @@ namespace POS
         private void home()
         {
             IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.menuPage;
-        }
-       
+        }  
 
-        /// <summary>
-        /// show the edit text box for increasing or decreasing Quantity
-        /// </summary>
-        /// <param name="checkid">id of product to restock</param>
-        private void restock(object checkid)
-        {
-            stockChangeError = "Restocking";
-            update = 1;
-            selectProductToEditQnty((int)checkid);
-        }
-        /// <summary>
-        /// destock methode
-        /// </summary>
-        /// <param name="checkid">id of product to destock</param>
-        private void destock(object checkid)
-        {
-            stockChangeError = "Destocking";
-            update = -1;
-            selectProductToEditQnty((int)checkid);
-        }
-        /// <summary>
-        /// sets the product quantity value to the database
-        /// </summary>
-        private void updateQnty()
-        {
-            int stock;
-            //check if product id set
-            if (EditProduct != null)
-            {
-                //check if stckchange is a number and is greater than 1 otherwise throw error
-                if (int.TryParse(stockChange.ToString(), out stock)&stockChange>0)
-                {
-                    stockChangeError = null;
-                    //check if it is a destock or a restock
-                    if (update == -1)
-                    {
-                        if (EditProduct.Quantity < stockChange)
-                        {
-                            stockChangeError = "Your destocking value is greater than the Quantity available";
-                            return;
-                        }
-                        else
-                        {
-                            EditProduct.Quantity -= stockChange;
-                            Prod.editProduct(EditProduct);
-                        }
-                    }
-                    else
-                    {
-                        EditProduct.Quantity += stockChange;
-                        Prod.editProduct(EditProduct);
-                    }
-                    //reset view to normal
-                    stockChangeError = null;
-                    stockChange = null;
-                    EditProduct.IsActiveEdit = false;
-
-                    RecalculateProductValue();
-                }
-                else
-                {
-                    stockChangeError = "stock value must be a positive number";
-                }
-
-            }
-
-
-        }
-        /// <summary>
-        /// selects the product to restock or destock
-        /// </summary>
-        /// <param name="id">id of product to action</param>
-        private void selectProductToEditQnty(int id)
-        {
-            var hasValue = listProduct.Where(x => x.IsActiveEdit).FirstOrDefault();
-            if (hasValue != null)
-            {
-                hasValue.IsActiveEdit = false;
-            }
-            //get the product to effect change
-            var Product = listProduct.Where(x => x.ProductId == id).FirstOrDefault();
-            //set the visiblity to true
-            Product.IsActiveEdit = true;
-            EditProduct = Product;
-        }
-        /// <summary>
-        /// recalculation of total value after an edit
-        /// </summary>
-        private void RecalculateProductValue()
-        {
-            EditProduct.TotalValue = EditProduct.Quantity * EditProduct.pricePerUnit;
-        }
-        /// <summary>
-        /// setting for viewing details 
-        /// </summary>
-        /// <param name="id">id of the product to view</param>
         private void setupadateProduct(object id)
         {
             //manage view to give access to the edit panel
             Prod.IsActiveEdit = false;
             showAdd = false;
             showEdit = false;
+            showStock = false;
             showDetails = true;
             //select the product to edit fro the listproduct
             Prod = listProduct.Where(x => x.ProductId == (int)id).FirstOrDefault();
+
+            //holds the old values of the product before edit
+
             Prod.IsActiveEdit = true;
             //reload category and branch
         }
-
+        OldProduct oldProduct = new OldProduct();
         private void setProductForUpdate()
         {
             //manage view to give access to the edit panel
@@ -312,23 +374,21 @@ namespace POS
             showAdd = false;
             showEdit = true;
             showDetails = false;
+            showStock = false;
             //select the product to edit fro the listproduct
             Prod = listProduct.Where(x => x.ProductId == Prod.ProductId).FirstOrDefault();
+           
+            //set old product before edit
+            oldProduct.markup =Prod.Markup.Value;
+            oldProduct.dateLastUpdated = Prod.DateOfLastUpdate.Value;
+            oldProduct.Quantity = Prod.Quantity.Value;
+            oldProduct.ProductId = Prod.ProductId;
+
             renewObj();
            
 
         }
-        /// <summary>
-        /// show the panel to add new product
-        /// </summary>
-        private void addProdView()
-        {
-            addBtnVisible = true;
-            editBtnVisible = false;
-            Prod.categories = category.GetAllCategories();
-            Prod.branches = branch.GetBranchAllBranches();
-            sideBarVisible = sideBarVisible ? false : true;
-        }
+
         /// <summary>
         /// make the filter panel visible or visible false
         /// </summary>
@@ -355,15 +415,11 @@ namespace POS
                     Prod.categoryName = category.Name;
 
                 }
-                if (branch.BranchId>0)
-                {
-                    Prod.BranchId = branch.BranchId;
-                    Prod.BranchName = branch.Name;
-                }
-                Prod.editProduct(Prod);
+                Prod.editProduct(Prod,oldProduct);
                 showAdd = false;
                 showEdit = false;
                 showDetails = true;
+                showStock = false;
                 return;
             }
         }
@@ -376,9 +432,7 @@ namespace POS
             CurrentPageSet = itemsPerPage;
             listProduct = Prod.GetProducts(itemsPerPage, Page,searchString,filterValues);
         }
-        /// <summary>
-        /// page next control
-        /// </summary>
+ 
         private void NextPage()
         {
             int availableItems = Page * CurrentPageSet;
@@ -388,9 +442,7 @@ namespace POS
                Page++; listProduct = Prod.GetProducts(CurrentPageSet, Page,searchString, filterValues);
             } 
         }
-        /// <summary>
-        /// page prev control
-        /// </summary>
+
         private void PrevPage()
         {
             if (Page>1)
@@ -398,9 +450,7 @@ namespace POS
                 Page--;listProduct = Prod.GetProducts(CurrentPageSet, Page,searchString, filterValues);
             }
         }
-        /// <summary>
-        /// search control
-        /// </summary>
+
         private void Search()
         {
             //check if filters are valid
@@ -412,19 +462,14 @@ namespace POS
                 listProduct = Prod.GetProducts(CurrentPageSet, Page, searchString,filterValues);
             }  
         }
-        /// <summary>
-        /// clear the filter to reset to no filter
-        /// </summary>
+
         private void filterClear()
         {
             //filter clear
             setFiltersToZero();
             listProduct = Prod.GetProducts(itemsPerPage, Page, searchString, filterValues);
         }
-        /// <summary>
-        /// delete the product
-        /// </summary>
-        /// <param name="id"></param>
+
         private void setDelete(object id)
         {
             var hasValue = listProduct.Where(x => x.IsActiveEdit).FirstOrDefault();
@@ -469,6 +514,79 @@ namespace POS
              filterValues.maxQuantity = 0;
             filterValues.minTotalValue = 0;
             filterValues.maxTotalValue = 0;
+        }
+
+        private void showStockbtn()
+        {
+            showAdd = false;
+            showEdit = false;
+            showDetails = false;
+            showStock = true;
+            stock_addNew = false;
+            stock_details = true;
+
+            //get the stocks for the current product
+            stocks = new ObservableCollection<stock>(stock_item.setStock(Prod.ProductId));
+            if(stocks.Count>0)
+            {
+                stocks_detail = stocks.FirstOrDefault();
+                stocks_detail.is_selected = true;
+            }
+            
+        }
+        private void closeStock()
+        {
+            showAdd = false;
+            showEdit = false;
+            showDetails = true;
+            showStock = false;
+        }
+        public class stock: BaseViewModel
+        {
+            IStock dbs = new StockApp();
+            public Guid stock_id { get; set; }
+            public DateTime date_of_stock { get; set; }
+            public int quantity { get; set; }
+            public decimal purchase_price { get; set; }
+            public decimal price { get; set; }
+            public decimal total_value { get; set; }
+            public decimal markup { get; set; }
+            public int ProductId { get; set; }
+            public int BranchId { get; set; }
+            public int current_running_stock { get; set; }
+            public decimal current_revenue { get; set; }
+            public bool is_running_stock { get; set; }
+            public string batch_number { get; set; }
+            public virtual Branch Branch { get; set; }
+            public bool is_selected { get; set; }
+
+            public List<stock> setStock(int prodduct_id)
+            {
+                List<stock> stocks = new List<stock>();
+                foreach (var item in dbs.getStocksForProduct(prodduct_id))
+                {
+
+                    stock stock = new stock();
+                    stock.stock_id = item.stock_id;
+                    stock.date_of_stock = item.date_of_stock;
+                    stock.quantity = item.quantity;
+                    stock.purchase_price = item.purchase_price;
+                    stock.price = item.price;
+                    stock.total_value = item.total_value;
+                    stock.markup = item.markup;
+                    stock.ProductId = item.ProductId;
+                    stock.BranchId = item.BranchId;
+                    stock.current_revenue = item.current_revenue;
+                    stock.current_running_stock = item.current_running_stock;
+                    stock.is_running_stock = item.is_running_stock;
+                    stock.batch_number = item.batch_number;
+                    stock.Branch = item.Branch;
+                    stock.is_selected = false;
+
+                    stocks.Add(stock);
+                }
+                return stocks;
+            }
         }
         #endregion
     }

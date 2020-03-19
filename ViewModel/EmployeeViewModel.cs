@@ -25,6 +25,7 @@ namespace POS
         public ICommand btnSearch { get; set; }
         public ICommand btnAddNew { get; set; }
         public ICommand btnSaveEdit { get; set; }
+        public ICommand btn_balance { get; set; }
         public ICommand btnSaveNew { get; set; }
         public ICommand btnDetails { get; set; }
         public bool showDetails { get; set; } = true;
@@ -46,6 +47,7 @@ namespace POS
             btnSaveNew = new RelayCommand(SaveNew);
             btnDetails = new RelayCommand(details);
             btnDelete = new RelayCommand(delete);
+            btn_balance = new RelayCommand(balanceOff);
 
         }
 
@@ -153,6 +155,11 @@ namespace POS
                }
         }
 
+        private void balanceOff()
+        {
+            IocContainer.Kenel.Get<AppViewModel>().teller_id = emplo.employee.EmployeeId;
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.balanceOfEmployee;
+        }
         private void backHome()
         {
             IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.menuPage;

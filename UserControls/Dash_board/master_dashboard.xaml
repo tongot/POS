@@ -1,0 +1,190 @@
+﻿<UserControl x:Class="POS.master_dashboard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1000">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!--top filters -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+
+            </Grid.ColumnDefinitions>
+
+            <!-- date filters-->
+
+            <GroupBox Margin="4" Padding="4" Background="{StaticResource OrangeDarken4Brush}" Foreground="White">
+                <StackPanel>
+                    <TextBlock Text="{Binding dates_error}" Foreground="{StaticResource FontLightBrush}"/>
+                    <TextBlock Text="Start Date"></TextBlock>
+                    <DatePicker SelectedDate="{Binding start_date}"/>
+                    <TextBlock Text="End Date"></TextBlock>
+                    <DatePicker SelectedDate="{Binding end_date}"/>
+                    <Button Content="Reset Filters" Command="{Binding btn_reset}"
+                            Height="30" Margin="2" FontSize="16" Foreground="{StaticResource FontLightBrush}"
+                            ></Button>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox VerticalAlignment="top" Margin="4" Height="100" Padding="4" Grid.Column="1" Background="{StaticResource OrangeDarken4Brush}" Foreground="White">
+                <StackPanel>
+                    <TextBlock Text="{Binding product_code_error, FallbackValue=Erro}"></TextBlock>
+                    <TextBlock Text="Product Codes"></TextBlock>
+                    <TextBox Text="{Binding product_code}" Foreground="{StaticResource FontLightBrush}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Margin="4" VerticalAlignment="top"  Height="100" Padding="4" Grid.Column="2" Background="{StaticResource OrangeDarken4Brush}" Foreground="White">
+                <StackPanel>
+                    <TextBlock Text="{Binding employee_error, FallbackValue=Erro}"></TextBlock>
+                    <TextBlock Text="Employee"></TextBlock>
+                    <TextBox Text="{Binding employee_username}" Foreground="{StaticResource FontLightBrush}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Margin="4" VerticalAlignment="top"  Height="100" Padding="4" Grid.Column="3" Background="{StaticResource OrangeDarken4Brush}" Foreground="White">
+                <StackPanel>
+                    <TextBlock Text="{Binding branch_error, FallbackValue=Erro}"></TextBlock>
+                    <TextBlock Text="Branch"></TextBlock>
+                    <ComboBox ItemsSource="{Binding branchies}" SelectedItem="{Binding Path=branch}" DisplayMemberPath="Name" Foreground="{StaticResource FontDarkBrush}"/>
+                </StackPanel>
+            </GroupBox>
+            
+            <!--filter selection remove-->
+            <Grid  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="taku" Padding="4" Margin="4" Height="30"></Button>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Daily" Grid.Column="0" Background="{StaticResource Primary}" 
+                    Command="{Binding btn_day}"
+                    Foreground="{StaticResource FontLightBrush}" Margin="2"/>
+
+            <Button Content="Monthly" Grid.Column="1" Background="{StaticResource Success}" 
+                    Command="{Binding btn_month}"
+                    Foreground="{StaticResource FontLightBrush}" Margin="2"/>
+
+            <Button Content="Yearly" Grid.Column="2" Background="{StaticResource Warning}" 
+                     Command="{Binding btn_year}"
+                    Foreground="{StaticResource FontLightBrush}" Margin="2"/>
+        </Grid>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2" Grid.RowSpan="3" Margin="5">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                    <Border Margin="8" Grid.Column="0" Grid.Row="0" CornerRadius="4" Background="{StaticResource Success}">
+                        <StackPanel>
+                            <TextBlock HorizontalAlignment="Center" Foreground="{StaticResource FontLightBrush}"
+                    Text="Sales Revenue" FontWeight="Bold" FontSize="15"/>
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Orientation="Horizontal">
+                                <TextBlock Foreground="{StaticResource FontLightBrush}" 
+                           FontSize="20"
+                           Text="P"/>
+
+                                <TextBlock Foreground="{StaticResource FontLightBrush}" 
+                           FontSize="30"
+                           Text="{Binding sales_revenue, FallbackValue=200000}"
+                           VerticalAlignment="Bottom"
+                           />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                <Border Margin="8" Grid.Column="1" Grid.Row="0" CornerRadius="4" Background="{StaticResource Primary}">
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Center" Foreground="{StaticResource FontLightBrush}"
+                    Text="Units Sold" FontWeight="Bold" FontSize="15"/>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Orientation="Horizontal">
+                            <TextBlock Foreground="{StaticResource FontLightBrush}" 
+                           FontSize="30"
+                           Text="{Binding sold_units, FallbackValue=200000}"/>
+
+                            <TextBlock Foreground="{StaticResource FontLightBrush}" 
+                           FontSize="20"
+                           Text="units"
+                           VerticalAlignment="Bottom"
+                           />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Grid Grid.Row="1" Margin="2" Grid.ColumnSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Foreground="{StaticResource FontDarkBrush}" Text="Product Counts"
+                               TextAlignment="Center" Grid.Column="1" FontSize="20" FontWeight="Bold"
+                               />
+                    <lvc:CartesianChart  Grid.Row="1" Margin="2" Grid.Column="1"  Foreground="Black" Background="LightGray"
+                                     Series="{Binding SeriesCollection_1}" LegendLocation="Bottom">
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Title="Number products sold" LabelFormatter="{Binding YFormatter_1}"></lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Product Name" Labels="{Binding Labels_1}"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                        <lvc:CartesianChart.DataTooltip>
+                            <lvc:DefaultTooltip SelectionMode="SharedYValues"></lvc:DefaultTooltip>
+                        </lvc:CartesianChart.DataTooltip>
+                    </lvc:CartesianChart>
+                    
+                    <TextBlock Foreground="{StaticResource FontDarkBrush}" Text="Sales By Employee"
+                               TextAlignment="Center" Grid.Column="0" FontSize="20" FontWeight="Bold"
+                               />
+                    <lvc:CartesianChart Grid.Row="1" Margin="2"  Grid.Column="0" Foreground="Black" 
+                                    Background="{StaticResource OrangeLighten3Brush}" Series="{Binding SeriesCollection}" LegendLocation="Right" >
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Sales Revenue" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+
+                    </lvc:CartesianChart >
+
+                </Grid>
+
+
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

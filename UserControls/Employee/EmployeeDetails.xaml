@@ -16,6 +16,16 @@
 
         <Border Grid.ColumnSpan="2" Background="{StaticResource OrangeLighten1Brush}" CornerRadius="3">
             <StackPanel HorizontalAlignment="Right" Margin="1"  Background="{StaticResource FontLightBrush}" Orientation="Horizontal">
+                <Button Background="Transparent" Command="{Binding btn_balance}" Margin="2">
+                    <StackPanel>
+                        <Grid Width="38" Height="38">
+                            <Grid.Background>
+                                <ImageBrush ImageSource="/Images/sales.png"/>
+                            </Grid.Background>
+                        </Grid>
+
+                    </StackPanel>
+                </Button>
                 <Button Background="Transparent" Command="{Binding btnEdit}" Margin="2">
                     <StackPanel>
                         <Grid Width="38" Height="38">
@@ -57,7 +67,7 @@
 
                 <TextBlock Text="NationalId No." Foreground="{StaticResource OrangeDarken1Brush}"/>
                 <TextBlock Foreground="Gray" FontSize="18" IsEnabled="False" Text="{Binding emplo.employee.NationalIdNumber}"/>
-
+                
             </StackPanel>
 
             <StackPanel Grid.Column="1">

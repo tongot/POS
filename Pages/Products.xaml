@@ -80,6 +80,7 @@
             <local:EditProduct  Visibility="{Binding showEdit, Converter={local:visibilityConverter}}"/>
             <local:ProductDetail  Visibility="{Binding showDetails, Converter={local:visibilityConverter}}"/>
             <local:AddProduct  Visibility="{Binding showAdd, Converter={local:visibilityConverter}}"/>
+            <local:Stocking  Visibility="{Binding showStock, Converter={local:visibilityConverter}}"/>
         </Grid>
 
         <Grid Visibility="{Binding filterVisible, Converter={local:visibilityConverter}}"  Grid.Row="1" Grid.Column="1">

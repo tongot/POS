@@ -1,4 +1,6 @@
 ﻿using AppDatabase;
+using Ninject;
+using POS.Ioc;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,37 +12,45 @@ namespace POS
     {
         IProduct db;
         ICategory dbc;
+        IStockTrack dbstk;
         public VmProduct()
         {
             db = new ProductApp();
             dbc = new CategoryApp();
+            dbstk = new StockTrackApp();
         }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
-        public int? Quantity { get; set; }
+        public int? Quantity { get; set; } = 0;
         /// <summary>
         /// calculated from mark up price
         /// </summary>
-        public double? Price { get; set; }
-        public double? TotalValue { get; set; }
+        public decimal? Price { get; set; }
+        public decimal? TotalValue { get; set; } = 0;
         public DateTime? DateOfLastUpdate { get; set; }
-        public double? PurchasePrice { get; set; }
+        public decimal? PurchasePrice { get; set; }
         public string Manufacturer { get; set; }
         public string ProductCode { get; set; }
         public string CapturedBy { get; set; }
         public int EmployeedId { get; set; }
         public int CategoryId { get; set; }
-        public int BranchId { get; set; }
-        public float? Markup { get; set; }
+        public decimal? Markup { get; set; }
         public string BranchName { get; set; }
         public bool IsActiveEdit { get; set; }
         public bool IsTodelet { get; set; }
         public string categoryName { get; set; }
+
         public Category category { get; set; }
+
+
+       
+
+
         public StringBuilder Erros { get; set; }
+        string username = IocContainer.Kenel.Get<AppViewModel>().CurrentUser.username;
         public VmProductSearchFilter filter = new VmProductSearchFilter();
-public ObservableCollection<VmCategory> categories { get; set; }
+        public ObservableCollection<VmCategory> categories { get; set; }
         public ObservableCollection<VmBranch> branches { get; set; }
 
         /// <summary>
@@ -51,20 +61,11 @@ public ObservableCollection<VmCategory> categories { get; set; }
         public string ValidateProduct(VmProduct prod)
         {
             Erros = new StringBuilder();
-            double markup;
-            int quantity;
             if (string.IsNullOrWhiteSpace(prod.ProductName))
             {
                 Erros.Append("*Name is a required field\n");
             }
-            if (prod.Markup == null)
-            {
-                Erros.Append("*Markup is a required field\n");
-            }
-            if (prod.Quantity == null)
-            {
-                Erros.Append("*Quantity is a required field\n");
-            }
+          
             if (string.IsNullOrWhiteSpace(prod.Manufacturer))
             {
                 Erros.Append("*Manufacturer is a required field\n");
@@ -77,81 +78,17 @@ public ObservableCollection<VmCategory> categories { get; set; }
             {
                 Erros.Append("*Product Code is a required field\n");
             }
-            if (string.IsNullOrWhiteSpace(prod.BranchName))
-            {
-                Erros.Append("*Branch Name is a required field\n");
-            }
-            if (prod.PurchasePrice == null)
-            {
-                Erros.Append("*Purchase is a required field\n");
-            }
-            if (double.TryParse(prod.Markup.ToString(), out markup))
-            {
-                if (prod.Markup <= 0)
-                {
-                    Erros.Append("*markup must be greater than 0\n");
-                }
-            }
-            else
-            {
-                Erros.Append("*Invalid markup\n");
-            }
-            if (int.TryParse(prod.Quantity.ToString(), out quantity))
-            {
-                if (prod.Quantity < 1)
-                {
-                    Erros.Append("*markup must be greater than 1\n");
-                }
-            }
-            else
-            {
-                Erros.Append("*Invalid Quantity\n");
-            }
-            if (double.TryParse(prod.PurchasePrice.ToString(), out markup))
-            {
-                if (prod.PurchasePrice < 0.01)
-                {
-                    Erros.Append("*Purchase Price must be greater than 0.01\n");
-                }
-            }
-            else
-            {
-                Erros.Append("*Invalid Purchase Price\n");
-            }
+           
             return Erros.ToString();
 
 
         }
 
-        #region calculated fields
-        public double? pricePerUnit
-        {
-            get
-            {
-                return ((Markup + 100) / 100) * PurchasePrice;
-            }
-            set
-            {
-                pricePerUnit = value;
-            }
-        }
-        public double? Value
-        {
-            get
-            {
-                return pricePerUnit * Quantity;
-            }
-            set { Value = value; }
-        }
-        #endregion
-        
-
-
 
         /// <summary>
-        /// set the product to match database object
+        /// set the product for view model to match database object product
         /// </summary>
-        /// <param name="p"></param>
+        /// <param name="p">view model product</param>
         /// <returns></returns>
         public Product setProduct(VmProduct p)
         {
@@ -159,28 +96,22 @@ public ObservableCollection<VmCategory> categories { get; set; }
             product.ProductId = p.ProductId;
             product.ProductName = p.ProductName;
             product.Description = p.Description;
-            product.Quantity = p.Quantity.Value;
-            product.Price = p.pricePerUnit.Value;
-            product.TotalValue = p.Value.Value;
+            product.Quantity = 0;
+            product.TotalValue =0;
             product.DateOfLastUpdate = p.DateOfLastUpdate.Value;
-            product.PurchasePrice = p.PurchasePrice.Value;
             product.Manufacturer = p.Manufacturer;
             product.ProductCode = p.ProductCode;
             product.CapturedBy = p.CapturedBy;
             product.EmployeedId = p.EmployeedId;
             product.CategoryId = p.CategoryId;
-            product.BranchId = p.BranchId;
-            product.BranchName = p.BranchName;
-            product.markup = p.Markup.Value;
             return product;
+
         }
-        /// <summary>
-        /// add a new product to the database
-        /// </summary>
-        /// <param name="p"></param>
         public void AddProduct(VmProduct p)
         {
-            db.addProduct(setProduct(p));
+            p.DateOfLastUpdate = DateTime.Now;
+            var product = setProduct(p);
+            db.addProduct(product, username);
         }
         /// <summary>
         /// get th eproducts to display to the screen
@@ -190,25 +121,20 @@ public ObservableCollection<VmCategory> categories { get; set; }
         {
             //filter.setZero(f);
             ObservableCollection<VmProduct> products = new ObservableCollection<VmProduct>();
-            foreach (var p in db.GetAllProducts(currentPage, Perpage,filter.setFilter(f)))
+            foreach (var p in db.GetAllProducts(currentPage, Perpage, filter.setFilter(f)))
             {
                 VmProduct product = new VmProduct();
                 product.ProductId = p.ProductId;
                 product.ProductName = p.ProductName;
                 product.Description = p.Description;
                 product.Quantity = p.Quantity;
-                product.Price = p.Price;
                 product.TotalValue = p.TotalValue;
                 product.DateOfLastUpdate = p.DateOfLastUpdate;
-                product.PurchasePrice = p.PurchasePrice;
                 product.Manufacturer = p.Manufacturer;
                 product.ProductCode = p.ProductCode;
                 product.CapturedBy = p.CapturedBy;
                 product.EmployeedId = p.EmployeedId;
                 product.CategoryId = p.CategoryId;
-                product.BranchId = p.BranchId;
-                product.BranchName = p.BranchName;
-                product.Markup = p.markup;
                 product.IsActiveEdit = false;
                 product.category = new Category();
                 product.category = dbc.getCategoryById(product.CategoryId);
@@ -218,7 +144,7 @@ public ObservableCollection<VmCategory> categories { get; set; }
             }
             return products;
         }
-        public void editProduct(VmProduct vmpr)
+        public void editProduct(VmProduct vmpr, OldProduct old)
         {
             db.updateProduct(setProduct(vmpr));
         }
@@ -226,7 +152,7 @@ public ObservableCollection<VmCategory> categories { get; set; }
         {
             return db.totalProducts(this.filter.setFilter(filter));
         }
-        public double totalValueOfGoods(VmProductSearchFilter filter)
+        public decimal totalValueOfGoods(VmProductSearchFilter filter)
         {
             return db.TotalValue(this.filter.setFilter(filter));
         }
@@ -234,9 +160,19 @@ public ObservableCollection<VmCategory> categories { get; set; }
         {
             return db.TotalQuantity(this.filter.setFilter(filter));
         }
+        public void updateProductStockUp(int id,int qnt, decimal value)
+        {
+            db.updateQuantity(id, qnt, value, true);
+        }
         public void deleteProduct(int id)
         {
             db.deleteProduct(id);
         }
+        public void changePrice()
+        {
+
+        }
+
     }
+  
 }

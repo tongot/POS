@@ -106,7 +106,7 @@ namespace POS
             vmEmplo.Branch = vmEmplo.branches.Where(x => x.Name == emplo.Branch).FirstOrDefault();
             if (emplo.LastLogInTime!=null)
             {
-vmEmplo.lastLogIn = emplo.LastLogInTime.Value;
+                vmEmplo.lastLogIn = emplo.LastLogInTime.Value;
             }
             
             return vmEmplo;
@@ -149,6 +149,7 @@ vmEmplo.lastLogIn = emplo.LastLogInTime.Value;
             emplo.JoiningDate = vmEmplo.JoiningDate;
             emplo.Surname = vmEmplo.Surname;
             emplo.Branch = vmEmplo.Branch.Name;
+            emplo.BranchId = vmEmplo.Branch.BranchId;
             emplo.Address = vmEmplo.Address;
             emplo.EmailAddress = vmEmplo.EmailAddress;
             emplo.EmployeeId = vmEmplo.EmployeeId;

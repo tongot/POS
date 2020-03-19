@@ -14,7 +14,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Border Grid.ColumnSpan="2" Background="{StaticResource OrangeLighten1Brush}" CornerRadius="3">
@@ -35,35 +35,26 @@
                 <TextBlock Text="{Binding ErrorForProduct}" Foreground="{StaticResource Danger}"/>
                 <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Name of product"/>
                 <TextBox Text="{Binding Prod.ProductName,ValidatesOnDataErrors=True}"/>
-                <TextBlock  Foreground="{StaticResource OrangeDarken1Brush}" Text="Markup %"/>
-                <TextBox Text="{Binding Prod.Markup}"/>
                 <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Quantity"/>
-                <TextBox Text="{Binding Prod.Quantity}"/>
+                <TextBox Text="{Binding Prod.Quantity}" IsEnabled="False"/>
+                
+                <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Current Value of good"/>
+                <TextBox Text="{Binding Prod.Value}" IsEnabled="False"/>
             </StackPanel>
 
             <StackPanel  Grid.Row="1" Grid.Column="1" Margin="4" >
                 <TextBlock/>
-                <TextBlock Foreground="{StaticResource OrangeDarken1Brush}"  Text="purchase Price"/>
-                <TextBox Text="{Binding Prod.PurchasePrice}"/>
                 <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Manufacturer"/>
                 <TextBox Text="{Binding Prod.Manufacturer}"/>
                 <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="PCode"/>
                 <TextBox Text="{Binding Prod.ProductCode}"/>
+              
                 <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Select category"/>
                 <ComboBox ItemsSource="{Binding Path=Prod.categories}" SelectedItem="{Binding Path=category}" DisplayMemberPath="Name"/>
-                <TextBlock Foreground="{StaticResource OrangeDarken1Brush}" Text="Select Branch"/>
-                <ComboBox ItemsSource="{Binding Path=Prod.branches}" SelectedItem="{Binding Path=branch}" DisplayMemberPath="Name"/>
+                
 
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="0" Margin="4" Height="400">
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                    <TextBlock Text="Tatal Value : " Foreground="{StaticResource OrangeDarken1Brush}"  FontSize="14"/>
-                    <TextBlock Text="{Binding Prod.Value}" Foreground="{StaticResource FontDarkBrush}" FontSize="14" VerticalAlignment="Bottom"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Price/Unity : "  Foreground="{StaticResource OrangeDarken1Brush}" FontSize="14"/>
-                    <TextBlock Text="{Binding Prod.pricePerUnit}"  Foreground="{StaticResource FontDarkBrush}" FontSize="14" VerticalAlignment="Bottom"/>
-                </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Category : "  Foreground="{StaticResource OrangeDarken1Brush}" FontSize="14"/>
                     <TextBlock Text="{Binding Prod.categoryName}"  Foreground="{StaticResource FontDarkBrush}" FontSize="14" VerticalAlignment="Bottom"/>
@@ -71,16 +62,8 @@
             </StackPanel>
             <StackPanel  Grid.Row="2" Grid.Column="1" Margin="4"  Height="400">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Branch : " Foreground="{StaticResource OrangeDarken1Brush}" FontSize="14"/>
-                    <TextBlock Text="{Binding Prod.BranchName}"  Foreground="{StaticResource FontDarkBrush}" FontSize="14" VerticalAlignment="Bottom"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Last Updated By : " Foreground="{StaticResource OrangeDarken1Brush}" FontSize="14"/>
                     <TextBlock Text="{Binding Prod.CapturedBy}"  Foreground="{StaticResource FontDarkBrush}" FontSize="14" VerticalAlignment="Bottom"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Last update : "  Foreground="{StaticResource OrangeDarken1Brush}" FontSize="20"/>
-                    <TextBlock Text="{Binding Prod.DateOfLastUpdate}"  Foreground="{StaticResource FontDarkBrush}" FontSize="14" VerticalAlignment="Bottom"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

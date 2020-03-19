@@ -11,7 +11,7 @@ namespace POS
     /// </summary>
     public class MainViewModel: BaseViewModel
     {
-        IRole dbr;IPermissions dbp;
+        IRole dbr;IPermissions dbp; IEmployee dbe;
         ConnectionStringSetter con = new ConnectionStringSetter();
 
         public ICommand  btnSignOut { get; set; }
@@ -23,6 +23,7 @@ namespace POS
         {    
             dbr = new RoleApp();
             dbp = new PermissionApp();
+            dbe = new EmployeeApp();
             TestConnection();
         
             btnSignOut = new RelayCommand(SignOut);
@@ -32,11 +33,16 @@ namespace POS
         }
         void SignOut()
         {
+            dbe.logOutUser(IocContainer.Kenel.Get<AppViewModel>().CurrentUser.username);
+
             IocContainer.Kenel.Get<AppViewModel>().CurrentUser.username = string.Empty;
             IocContainer.Kenel.Get<AppViewModel>().CurrentUser.EmployeeId = null;
             IocContainer.Kenel.Get<AppViewModel>().NotLogged = true;
             IocContainer.Kenel.Get<AppViewModel>().Logged = false;
             IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.logInPage;
+
+            
+            
         }
         void ChangePass()
         {

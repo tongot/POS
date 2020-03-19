@@ -16,8 +16,10 @@ namespace POS
         public ICommand toBranches { get; set; }
         public ICommand toCustomer { get; set; }
         public ICommand toCategories { get; set; }
-        
+        public ICommand toTaxes { get; set; }
+        public ICommand toDiscount { get; set; }
         public ICommand toSettings { get; set; }
+        public ICommand toDashboards { get; set; }
 
 
         public MenuViewModel()
@@ -30,10 +32,25 @@ namespace POS
             toCustomer = new RelayCommand(ViewCustomers);
             toCategories = new RelayCommand(ViewCategories);
             toSettings = new RelayCommand(ViewSettings);
+            toTaxes = new RelayCommand(ViewTax);
+            toDiscount = new RelayCommand(ViewDicount);
+            toDashboards = new RelayCommand(ViewDashBoards);
         }
         private void ViewProducts()
         {
             IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.product;
+        }
+        private void ViewDashBoards()
+        {
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.dashboard;
+        }
+        private void ViewTax()
+        {
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.taxPage;
+        }
+        private void ViewDicount()
+        {
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.discountPage;
         }
         private void ViewCategories()
         {

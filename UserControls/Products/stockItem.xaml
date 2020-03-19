@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="POS.stockItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:POS"
+             mc:Ignorable="d" 
+             Height="40" Width="400">
+    <UserControl.Resources>
+        <Style x:Key="gridKey" TargetType="Grid">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" Value="{StaticResource OrangeLighten4Brush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid x:Name="grid" Style="{StaticResource gridKey}" Margin="0 0 0 1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Width="4" Background="{StaticResource OrangeDarken1Brush}"
+              Visibility="{ Binding is_selected,Converter={local:visibilityConverter}}"
+              />
+        <Grid Grid.Column="1" >
+            <TextBlock FontFamily="{StaticResource GlobalFont}" VerticalAlignment="Center" Margin="4 0 0 0" 
+                       Text="{Binding batch_number, FallbackValue='B344029920'}"
+                       FontSize="20"/>
+        </Grid>
+        <behaviors:Interaction.Triggers>
+            <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=grid}">
+                <behaviors:InvokeCommandAction Command="{Binding ElementName=Level1, Path=DataContext.btn_get_stockdetail}" CommandParameter="{Binding stock_id}"/>
+            </behaviors:EventTrigger>
+        </behaviors:Interaction.Triggers>
+    </Grid>
+</UserControl>

@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace POS
 {
-    public class KeyPadViewModel : BaseViewModel, IRequestFocus,IPrintReceipt
+    public class KeyPadViewModel : BaseViewModel, IRequestFocus, IPrintReceipt
     {
         bool fromHold = false;
 
@@ -34,17 +34,17 @@ namespace POS
                 {
                     //if (value.Length  >1)
                     //{
-                        //vmPOS.ProductsSearched.Clear();
-                        _textBoxBarcode = value;
-                        if (vmPOS.AddProductCodeToCart(textBoxBarcode))
-                        {
-                            OnFocusRequested(nameof(textBoxBarcode));
-                        }
-                        //SearchProductList = true;
-                        ListOfProductToPay = true;
+                    //vmPOS.ProductsSearched.Clear();
+                    _textBoxBarcode = value;
+                    if (vmPOS.AddProductToCart(textBoxBarcode))
+                    {
+                        OnFocusRequested(nameof(textBoxBarcode));
+                    }
+                    //SearchProductList = true;
+                    ListOfProductToPay = true;
                     //}
                 }
-                if(_textBoxBarcode==string.Empty & vmPOS.saleError!="Insufficient amount")
+                if (_textBoxBarcode == string.Empty & vmPOS.saleError != "Insufficient amount")
                 {
                     vmPOS.saleError = string.Empty;
                 }
@@ -73,8 +73,12 @@ namespace POS
         public bool btnSearchVisibility { get; set; } = true;
         public bool hideProductView { get; set; } = false;
         public bool hideCustomerView { get; set; } = true;
-
+        public bool showPayBtn { get; set; } = true;
         public bool passBoxShow { get; set; } = false;
+        public bool showEnter { get; set; }
+        public bool showBarCodeReader { get; set; } = true;
+        public bool showSearchCustomer { get; set; } = true;
+        public bool showAddPlusBtn { get; set; } = true;
 
 
         #endregion
@@ -91,6 +95,7 @@ namespace POS
         public ICommand btnZero { get; set; }
         public ICommand btnDot { get; set; }
         public ICommand btnDZero { get; set; }
+
 
         #endregion
         #region function Buttons
@@ -230,8 +235,10 @@ namespace POS
                 vmPOS.Cart.Add(selectedProduct);
             }
             //increase the price
-            vmPOS.totalPrice += selectedProduct.price;
-            //clear searched chart
+            vmPOS.totalPrice += selectedProduct.totalPrice;
+            vmPOS.totalTax += selectedProduct.totalTax;
+            vmPOS.totalDiscount += selectedProduct.totalDiscount;
+            //clear searched chat
             vmPOS.ProductsSearched.Clear();
             clearStrings();
             OnFocusRequested(nameof(textBoxBarcode));
@@ -359,13 +366,13 @@ namespace POS
         #endregion
 
         #region methodes
-       
+
         /// <summary>
         /// hides the view of the key pad
         /// </summary>
         private void HidePadView()
         {
-            IsSearching = false; stateBtn = false;
+            IsSearching = false; stateBtn = false; showPayBtn = true; passBoxShow = false;
             NotesBtn = false; ChangeTxtBlock = false; KeyPadBtn = false; SearchProductList = false; ListOfProductToPay = true;
         }
         /// <summary>
@@ -373,10 +380,14 @@ namespace POS
         /// </summary>
         void SearchPressed()
         {
-            clearTextBox();
-            NotesBtn = false; ChangeTxtBlock = false; KeyPadBtn = true; SearchProductList = true; ListOfProductToPay = true;
-            IsSearching = true;
-            OnFocusRequested(nameof(textBoxBarcode));
+            if (canProceed(nameof(BtnSearchProduct)))
+            {
+                clearTextBox();
+                NotesBtn = false; ChangeTxtBlock = false; KeyPadBtn = true; ListOfProductToPay = true;
+                IsSearching = true;
+                OnFocusRequested(nameof(textBoxBarcode));
+            }
+
         }
         /// <summary>
         /// search button is pressed to set true the view fo the keypad and the note and change view and set issearch to false
@@ -389,8 +400,14 @@ namespace POS
                 if (vmPOS.stockAvailable(fromHold))
                 {
                     clearTextBox();
-                    IsSearching = false; stateBtn = false;
-                    NotesBtn = true; ChangeTxtBlock = true; KeyPadBtn = true; SearchProductList = false; ListOfProductToPay = true;
+                    //new
+                    btnSearchVisibility = false;
+                    showSearchCustomer = false;
+                    showEnter = true;
+                    showAddPlusBtn = false;
+                    IsSearching = false; stateBtn = false; showPayBtn = false;
+                    NotesBtn = true; ChangeTxtBlock = true; KeyPadBtn = true; 
+                    SearchProductList = false; ListOfProductToPay = true;
                 }
 
             }
@@ -400,7 +417,7 @@ namespace POS
         {
             vmPOS.ProductsSearched.Clear();
 
-            if (!string.IsNullOrWhiteSpace( textBoxBarcode))
+            if (!string.IsNullOrWhiteSpace(textBoxBarcode))
             {
                 vmPOS.AddProductToSearch(textBoxBarcode);
                 OnFocusRequested(nameof(textBoxBarcode));
@@ -411,40 +428,45 @@ namespace POS
         /// </summary>
         void Enter()
         {
-            if (string.IsNullOrEmpty(vmPOS.saleError)|vmPOS.saleError == "Insufficient amount")
+            if (canProceed(nameof(btnEnter)))
             {
 
-                //clear product in seach already
-                KeyPadBtn = true;
-                SearchProductList = false;
-                OnFocusRequested(nameof(textBoxString));
-                vmPOS.ProductsSearched.Clear();
-
-                double cashReceived = convertTocash();
-                if (cashReceived > 0)
+                btnSearchVisibility = false;
+                showSearchCustomer = false;
+                showEnter = true;
+                if (string.IsNullOrEmpty(vmPOS.saleError) | vmPOS.saleError == "Insufficient amount")
                 {
-                    if (vmPOS.totalPrice < cashReceived)
-                    {
-                        vmPOS.change = cashReceived - vmPOS.totalPrice;
-                        vmPOS.setSale(cashReceived, vmPOS.change, fromHold);
 
-                        if(vmPOS.executeVoid)
+                    //clear product in seach already
+                    SearchProductList = false;
+                    OnFocusRequested(nameof(textBoxString));
+                    vmPOS.ProductsSearched.Clear();
+
+                    decimal cashReceived = convertTocash();
+                    if (cashReceived > 0)
+                    {
+                        if (vmPOS.totalPrice < cashReceived)
                         {
-                            HidePadView();
-                            stateBtn = true;
-                            fromHold = false;
-                            btnSearchVisibility = true;
-                            OnFocusRequested("sale");
-                        }
-                        
-                    }
-                    else
-                    {
-                        vmPOS.saleError = "Insufficient amount";
-                    }
+                            vmPOS.change = cashReceived - vmPOS.totalPrice;
+                            vmPOS.setSale(cashReceived, vmPOS.change, fromHold);
 
+                            if (vmPOS.executeVoid)
+                            {
+                                HidePadView();
+                                stateBtn = true;
+                                fromHold = false;
+                                OnFocusRequested("sale");
+                            }
+
+                        }
+                        else
+                        {
+                            vmPOS.saleError = "Insufficient amount";
+                        }
+
+                    }
+                    clearStrings();
                 }
-                clearStrings();
             }
         }
         /// <summary>
@@ -452,29 +474,39 @@ namespace POS
         /// </summary>
         void sale()
         {
-            vmPOS.saleError = string.Empty;
-            
-            if (vmPOS.executeVoid)
+            if (canProceed(nameof(saleBtn)))
             {
-                OnFocusRequested(nameof(textBoxBarcode));
-                print(vmPOS.Cart.ToList(), vmPOS.totalPrice, vmPOS.change, vmPOS.user.username, vmPOS.refNumber);
-                vmPOS.finalSaleUpdate(SaleState.success);
+                vmPOS.saleError = string.Empty;
 
-                HidePadView();
-            }
-            else
-            {
-                vmPOS.saleError = "check stock errors!";
-            }
+                if (vmPOS.executeVoid)
+                {
+                   
+                    btnSearchVisibility = true;
+                    print(vmPOS.Cart.ToList(), vmPOS.totalPrice, vmPOS.change, vmPOS.user.username, vmPOS.refNumber);
+                    vmPOS.finalSaleUpdate(SaleState.success);
+                    HidePadView();
+                    OnFocusRequested(nameof(textBoxBarcode));
 
+                    showPayBtn = true;
+                }
+                else
+                {
+                    vmPOS.saleError = "check stock errors!";
+                }
+            }
         }
         /// <summary>
         /// void pressed show the admin passBox
         /// </summary>
         void Void()
         {
-            passBoxShow = true;
-            OnFocusRequested("password");
+            if(canProceed(nameof(voidBtn)))
+            {
+                passBoxShow = true;
+                btnSearchVisibility = true;
+                OnFocusRequested("password");
+            }
+
         }
         /// <summary>
         /// void auth
@@ -495,7 +527,9 @@ namespace POS
                 {
                     vmPOS.finalSaleUpdate(SaleState.Void);
                     HidePadView();
+                    btnSearchVisibility = true;
                     passBoxShow = false;
+                    showPayBtn = true;
                     OnFocusRequested(nameof(textBoxBarcode));
                 }
                 else
@@ -516,31 +550,35 @@ namespace POS
         }
         void Hold()
         {
-            if (vmPOS.executeVoid)
+            if (canProceed(nameof(holdBtn)))
             {
-                if (vmPOS.HoldList.Count > 0)
+                if (vmPOS.executeVoid)
                 {
-                    vmPOS.saleError = "There is already an item in hold, make void";
-                    btnClearHold = true;
-                    return;
+                    if (vmPOS.HoldList.Count > 0)
+                    {
+                        vmPOS.saleError = "There is already an item in hold, make void";
+                        btnClearHold = true;
+                        return;
+                    }
+                    vmPOS.HoldList.Clear();
+
+
+                    foreach (var item in vmPOS.Cart)
+                    {
+                        item.fromHold = true;
+                        vmPOS.HoldList.Add(item);
+                    }
+
+                    vmPOS.finalSaleUpdate(SaleState.hold);
+                    vmPOS.saleError = "Transaction sent to hold";
+                    showPayBtn = true;
+                    OnFocusRequested(nameof(textBoxBarcode));
+                    HidePadView();
                 }
-                vmPOS.HoldList.Clear();
-
-
-                foreach (var item in vmPOS.Cart)
+                else
                 {
-                    item.fromHold = true;
-                    vmPOS.HoldList.Add(item);
+                    vmPOS.saleError = "check stock errors!";
                 }
-
-                vmPOS.finalSaleUpdate(SaleState.hold);
-                vmPOS.saleError = "Transaction sent to hold";
-                OnFocusRequested(nameof(textBoxBarcode));
-                HidePadView();
-            }
-            else
-            {
-                vmPOS.saleError = "check stock errors!";
             }
         }
         /// <summary>
@@ -556,15 +594,16 @@ namespace POS
             clearTextBox();
             st.Clear();
             SearchSt.Clear();
+            OnFocusRequested(nameof(textBoxBarcode));
         }
         /// <summary>
-        /// convert the text string in text box to double
+        /// convert the text string in text box to decimal
         /// </summary>
         /// <returns></returns>
-        double convertTocash()
+        decimal convertTocash()
         {
-            double cashPaid;
-            if (!double.TryParse(textBoxString, out cashPaid))
+            decimal cashPaid;
+            if (!decimal.TryParse(textBoxString, out cashPaid))
             {
                 vmPOS.saleError = "Entered amount";
                 return 0;
@@ -573,21 +612,21 @@ namespace POS
         }
         void quantityPlus(object obj)
         {
-            int id = (int)obj;
-            var product = vmPOS.Cart.Where(x => x.ProductId == id).FirstOrDefault();
-            product.price += (product.price / product.quantity);
-            product.quantity += 1;
-            vmPOS.totalPrice = vmPOS.Cart.Sum(x => x.price);
-
-
+            string code = (string)obj;
+            vmPOS.AddProductToCart(code);
         }
         void quantityMinus(object obj)
         {
             int id = (int)obj;
             var product = vmPOS.Cart.Where(x => x.ProductId == id).FirstOrDefault();
-            product.price -= (product.price / product.quantity);
             product.quantity -= 1;
-            vmPOS.totalPrice = vmPOS.Cart.Sum(x => x.price);
+
+
+            //recalculate totals 
+            vmPOS.totalPrice = vmPOS.Cart.Sum(x => x.totalPrice);
+            vmPOS.totalTax = vmPOS.Cart.Sum(x => x.totalTax);
+            vmPOS.totalDiscount = vmPOS.Cart.Sum(x => x.totalDiscount);
+
             if (product.quantity == 0)
             {
                 vmPOS.Cart.Remove(product);
@@ -606,6 +645,8 @@ namespace POS
                     vmPOS.Cart.Add(item);
                 }
                 vmPOS.totalPrice = vmPOS.Cart.Sum(x => x.price);
+                vmPOS.totalTax = vmPOS.Cart.Sum(x => x.tax);
+                vmPOS.totalDiscount = vmPOS.Cart.Sum(x => x.discount);
                 fromHold = true;
             }
             else
@@ -618,17 +659,73 @@ namespace POS
             LogInView login = new LogInView();
             if (login.authenticateAdmin(username, pass.Password))
             {
+                pass.Password = "";
                 return true;
             }
+            pass.Password = "";
             return false;
         }
         protected virtual void OnFocusRequested(string propertyName)
         {
             FocusRequested?.Invoke(this, new FocusRequestedEventArgs(propertyName));
         }
-        public void print(List<POSProduct> cart, double totalPrice, double change, string tellerName,string refnumber)
+        public void print(List<POSProduct> cart, decimal totalPrice, decimal change, string tellerName, string refnumber)
         {
             printOutReciept?.Invoke(this, new PrintReceiptEventArgs(cart, totalPrice, change, tellerName, refnumber));
+        }
+        /// <summary>
+        /// permissios for execution when button pressed
+        /// the function chacks the name of button pressed 
+        /// then return true if it can execute of return false
+        /// </summary>
+        /// <param name="name">name of the button</param>
+        /// <returns></returns>
+        int EnterPressedCount = 1;
+        private bool canProceed(string name)
+        {
+
+            switch (name)
+            {
+                case nameof(btnEnter):
+                    if(EnterPressedCount==1)
+                    {
+                        if(vmPOS.Cart.Count()>0)
+                        {
+                            EnterPressedCount += 1;
+                            return true;
+                        }
+                    }
+                    else 
+                        {if(btnSearchVisibility == false & vmPOS.Cart.Count() > 0 & KeyPadBtn == false)
+                        {
+                            EnterPressedCount -= 1;
+                            return true;
+                        }
+
+                    }
+                       
+                    break;
+                case nameof(BtnSearchProduct):
+                    if (btnSearchVisibility == true)
+                        return true;
+                    break;
+                case nameof(holdBtn):
+                    if (btnSearchVisibility == false& KeyPadBtn == false)
+                        return true;
+                    break;
+                case nameof(voidBtn):
+                    if (btnSearchVisibility == false & KeyPadBtn == false)
+                        return true;
+                    break;
+                case nameof(saleBtn):
+                    if (btnSearchVisibility == false & KeyPadBtn == false)
+                        return true;
+                    break;
+                default:
+                    return false;
+            }
+
+            return false;
         }
         #endregion
     }

@@ -4,11 +4,12 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:POS"
-      xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" x:Class="POS.SalesPage"
+       x:Class="POS.SalesPage"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="450" d:DesignWidth="1800"
       Title="SalesPage">
-    <Grid>
+
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -32,33 +33,111 @@
             <TextBlock Text="Sales" Margin="10 0 0 0" FontSize="40" Foreground="{StaticResource FontDarkBrush}" VerticalAlignment="Center"></TextBlock>
         </StackPanel>
         <!--filter panel section-->
-        <local:filterForSales Grid.Column="0" Grid.Row="1"></local:filterForSales>
+        <local:filterForSales Margin="4" Grid.Column="0" Grid.Row="1"></local:filterForSales>
         <!--data grid for sales  section-->
+        <Grid Grid.Column="1" Margin="4"  Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 4">
+                <TextBlock Text="Total Success Sales: " FontSize="20" 
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Success}"
+                           Padding="4"
+                           />
+                <TextBlock Text="{Binding vmsales.total_success_sales, FallbackValue=1000}" FontSize="20" 
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Success}" 
+                           Padding="4" />
 
-        <dxg:GridControl Margin="4" Grid.Column="1" MaxHeight="1500" Grid.Row="0" Grid.RowSpan="2" Background="{StaticResource Primary}" EnableSmartColumnsGeneration="True" ItemsSource="{Binding vmsales.sales}">
-            <dxg:GridControl.Bands>
-                <dxg:GridControlBand Header="Sales Collection">
-                    <dxg:GridColumn FieldName="SaleId" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="Ref" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="DateOfSale" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="employeeUsername" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="Price" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="Quantity" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="state" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="cashReceived" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="change" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="TotalPrice" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="Branch" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="productName" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="DateOfSale" IsSmart="True"/>
-                    <dxg:GridColumn FieldName="customer" IsSmart="True"/>
-                </dxg:GridControlBand>
-            </dxg:GridControl.Bands>
-            <dxg:GridControl.View >
-                <dxg:TableView AllowEditing="False" ShowTotalSummary="True" AutoWidth="True"/>
-                
-            </dxg:GridControl.View>
-        </dxg:GridControl>
+                <TextBlock Text="Total Failed Sales: " FontSize="20" 
+                           Margin="10 0 0 0"
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Danger}"
+                           Padding="4"
+                           />
+                <TextBlock Text="{Binding vmsales.total_failed_sales, FallbackValue=1000}" FontSize="20" 
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Danger}"
+                           Padding="4"
+                           />
 
+                <TextBlock Text="Total Void Sales: " FontSize="20" 
+                           Margin="10 0 0 0"
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Warning}"
+                           Padding="4"
+                           />
+                <TextBlock Text="{Binding vmsales.total_void_sales, FallbackValue=1000}" FontSize="20" 
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Warning}"
+                           Padding="4"
+                           />
+
+                <TextBlock Text="Success Rate: " FontSize="20" 
+                           Margin="10 0 0 0"
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Primary}"
+                           Padding="4"
+                           />
+                <TextBlock Text="{Binding vmsales.rate_of_success, FallbackValue=1000}" FontSize="20" 
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Primary}"
+                           Padding="4"
+                           />
+                <TextBlock Text="%" FontSize="20" 
+                           Foreground="{StaticResource FontLightBrush}"
+                           Background="{StaticResource Primary}"
+                           Padding="4"
+                           />
+
+                <TextBlock Text="{Binding vmsales.count_of_success, FallbackValue=200}" FontSize="20"
+                               Margin="100 0 0 0"
+                           Foreground="{StaticResource Success}"
+                           Padding="4"
+                           />
+                <TextBlock Text="{Binding vmsales.count_of_failed, FallbackValue=20}" FontSize="20"
+                               Margin="10 0 0 0"
+                           Foreground="{StaticResource Danger}"
+                           Padding="4"
+                           />
+                <TextBlock Text="{Binding vmsales.count_of_void, FallbackValue=20}" FontSize="20"
+                               Margin="10 0 0 0"
+                           Foreground="{StaticResource Warning}"
+                           Padding="4"
+                           />
+            </StackPanel>
+            <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding vmsales.sales}"
+                  AlternatingRowBackground="AliceBlue" CanUserDeleteRows="False" CanUserAddRows="False" AutoGenerateColumns="False">
+                <DataGrid.Resources>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="{StaticResource Primary}"/>
+                        <Setter Property="Foreground" Value="{StaticResource FontLightBrush}"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="BorderThickness" Value="0,0,1,2"/>
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="Padding" Value="4"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Sale Id" Binding="{Binding Path=SaleId}"/>
+                    <DataGridTextColumn Header="Receipt No." Binding="{Binding Path=Ref}"/>
+                    <DataGridTextColumn Header="Date Of Sale" Binding="{Binding Path=DateOfSale}"/>
+                    <DataGridTextColumn Header="Teller" Binding="{Binding Path=employeeUsername}"/>
+                    <DataGridTextColumn Header="Bar Code" Binding="{Binding Path=productCode}"/>
+                    <DataGridTextColumn Header="Product Name" Binding="{Binding Path=productName}"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding Path=Price}"/>
+                    <DataGridTextColumn Header="Quantity" Binding="{Binding Path=Quantity}"/>
+                    <DataGridTextColumn Header="Total Price" Binding="{Binding Path=TotalPrice}"/>
+                    <DataGridTextColumn Header="Cash Received" Binding="{Binding Path=cashReceived}"/>
+                    <DataGridTextColumn Header="Branch" Binding="{Binding Path=Branch}"/>
+                    <DataGridTextColumn Header="Customer" Binding="{Binding Path=customer}"/>
+                    <DataGridTextColumn Header="State" Binding="{Binding Path=state}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+       
     </Grid>
 </Page>

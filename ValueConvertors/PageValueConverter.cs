@@ -31,7 +31,7 @@ namespace POS
                     return new Branches();
 
                 case ApplicationPage.posPage:
-                    return new PosSale();
+                    return new Pos2Page();
 
                 case ApplicationPage.salesPage:
                     return new SalesPage();
@@ -41,10 +41,24 @@ namespace POS
 
                 case ApplicationPage.customerPage:
                     return new Customers();
+
                 case ApplicationPage.roleManager:
                     return new roleManager();
+
                 case ApplicationPage.connections:
                     return new DataBaseCon();
+
+                case ApplicationPage.discountPage:
+                    return new DiscountsPage();
+
+                case ApplicationPage.taxPage:
+                    return new TaxPage();
+
+                case ApplicationPage.dashboard:
+                    return new Dash_Board();
+
+                case ApplicationPage.balanceOfEmployee:
+                    return new EmployeeBalanceOff();
 
                 default:
                     Debugger.Break();

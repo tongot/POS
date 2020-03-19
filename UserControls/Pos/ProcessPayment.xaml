@@ -1,0 +1,150 @@
+﻿<UserControl x:Class="POS.ProcessPayment"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="700">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!--<ColumnDefinition Width="300"></ColumnDefinition>-->
+            <ColumnDefinition></ColumnDefinition>
+
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <GroupBox Header="Amount paid">
+                    <TextBox Text="{Binding textbox_pad, Mode=TwoWay,
+                    UpdateSourceTrigger=PropertyChanged}" 
+                 x:Name="textbox_pad" 
+                 TextAlignment="Right"
+                 FontSize="30" Height="45"/>
+                </GroupBox>
+                
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition/>
+
+                    </Grid.ColumnDefinitions>
+                    <StackPanel MinWidth="240" HorizontalAlignment="Left">
+                        <Button Margin="5" Background="{StaticResource Warning}" 
+                        Command="{Binding btnTen}"
+                        Content="10" FontSize="30" Height="100"
+                        />
+
+                        <Button Margin="5" Background="{StaticResource Warning}" Content="20" 
+                        FontSize="30" Height="100"
+                        Command="{Binding btnTwenty}"
+                        />
+
+                        <Button Margin="5" Background="{StaticResource Primary}" 
+                        Foreground="{StaticResource FontDarkBrush}" Content="50" 
+                        Command="{Binding btnFifty}"
+                        FontSize="30" Height="100"/>
+
+                        <Button Margin="5" Background="{StaticResource Success}" 
+                        Foreground="{StaticResource FontDarkBrush}" Content="100" FontSize="30"
+                        Command="{Binding btnHundred}"
+                        Height="100"/>
+
+                        <Button Margin="5" Background="{StaticResource Danger}" 
+                        Foreground="{StaticResource FontDarkBrush}" Content="200" 
+                        Command="{Binding btnTwoHundred}"
+                        FontSize="30" Height="100"
+                        />
+                    </StackPanel>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <!--pad keys-->
+                                <StackPanel>
+                                    <Button Command="{Binding btnSeven}" Foreground="{StaticResource FontLightBrush}" Content="7" Height="100" Margin="5" FontSize="35"/>
+                                    <Button Command="{Binding btnFour}" Foreground="{StaticResource FontLightBrush}" Content="4" Height="100" Margin="5" FontSize="35"/>
+                                    <Button Command="{Binding btnOne}" Foreground="{StaticResource FontLightBrush}" Content="1" Height="100" Margin="5" FontSize="35"/>
+                                    <Button Command="{Binding btnZero}" Foreground="{StaticResource FontLightBrush}" Content="0" Height="100" Margin="5" FontSize="35"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <Button Command="{Binding btnEight}" Foreground="{StaticResource FontLightBrush}" Content="8" Height="100" Margin="5" FontSize="35"/>
+                                    <Button Command="{Binding btnFive}" Foreground="{StaticResource FontLightBrush}" Content="5" Height="100" Margin="5" FontSize="35"/>
+                                    <Button Command="{Binding btnTwo}" Foreground="{StaticResource FontLightBrush}" Content="2" Height="100" Margin="5" FontSize="35"/>
+                                    <Button Command="{Binding btnDot}" Foreground="{StaticResource FontLightBrush}" Content="." Height="100" Margin="5" FontSize="35"/>
+
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <Button Command="{Binding btnNine}" Foreground="{StaticResource FontLightBrush}" Content="9" Height="100" Margin="5" FontSize="35"/>
+                                    <Button Command="{Binding btnSix}" Foreground="{StaticResource FontLightBrush}" Content="6" Height="100" Margin="5" FontSize="35"/>
+                                    <Button Command="{Binding btnThree}" Foreground="{StaticResource FontLightBrush}" Content="3" Height="100" Margin="5" FontSize="35"/>
+                                    <Button  Grid.Column="1" 
+                                             Command="{Binding btn_enter}"
+                                        Foreground="{StaticResource FontLightBrush}" 
+                                        Background="{StaticResource Success}"
+                                        Height="100" Margin="5" FontSize="35"
+                                             Content="ENTER"/>
+                                </StackPanel>
+
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Button Command="{Binding btn_clear}" Content="CLEAR(f4)" 
+                                        Foreground="{StaticResource FontLightBrush}" 
+                                        Background="{StaticResource Primary}" Margin="5" 
+                                        FontSize="30" Height="100"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                </Grid>
+                <Grid Grid.Row="2" Visibility="{Binding stateBtn,Converter={local:visibilityConverter}}" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Command="{Binding btn_void}" Margin="2" Background="{StaticResource Danger}" 
+                            Content="Void(f12)" FontSize="30" MinHeight="100" MinWidth="100"/>
+                    <Button x:Name="btnSale"  Grid.Column="2" Command="{Binding btn_sale}"  Margin="2" 
+                            Background="{StaticResource Success}" 
+                            Foreground="{StaticResource FontDarkBrush}" Content="Sale(f10)" 
+                            FontSize="30" MinHeight="70" MinWidth="100"/>
+                </Grid>
+            </Grid>
+        </Grid>
+        
+        <!--<Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Text="Products to sale" FontWeight="Bold" TextAlignment="Center" FontSize="20"/>
+            </StackPanel>
+            <Grid Grid.Row="1">
+                <ItemsControl x:Name="Level1" ItemsSource="{Binding listProduct}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+
+        </Grid>-->
+
+    </Grid>
+</UserControl>

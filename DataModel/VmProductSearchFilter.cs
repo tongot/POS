@@ -19,12 +19,12 @@ namespace POS
         }
 
         public string searchString { get; set; }
-        public double? minPrice { get; set; } = 0;
-        public double? maxPrice { get; set; } = 0;
+        public decimal? minPrice { get; set; } = 0;
+        public decimal? maxPrice { get; set; } = 0;
         public int? minQuantity { get; set; } = 0;
         public int? maxQuantity { get; set; } = 0;
-        public double? minTotalValue { get; set; } = 0;
-        public double? maxTotalValue { get; set; } = 0;
+        public decimal? minTotalValue { get; set; } = 0;
+        public decimal? maxTotalValue { get; set; } = 0;
 
         public string ErrorNumberTostring { get;set; }
         public string PriceError { get; set; }
@@ -57,12 +57,12 @@ namespace POS
         /// <returns>returns true if filter is error free and the opposite is true</returns>
         public bool validateFilterValue(VmProductSearchFilter f)
         {
-            int i;double d;
+            int i;decimal d;
             //check if all interger filters are numbers 
-            if (!double.TryParse(f.maxPrice.ToString(), out d)
-               | !double.TryParse(f.minPrice.ToString(), out d)
-               | !double.TryParse(f.maxTotalValue.ToString(), out d)
-               | !double.TryParse(f.minTotalValue.ToString(), out d)
+            if (!decimal.TryParse(f.maxPrice.ToString(), out d)
+               | !decimal.TryParse(f.minPrice.ToString(), out d)
+               | !decimal.TryParse(f.maxTotalValue.ToString(), out d)
+               | !decimal.TryParse(f.minTotalValue.ToString(), out d)
                | !int.TryParse(f.minQuantity.ToString(), out i)
                | !int.TryParse(f.maxQuantity.ToString(), out i))
             {

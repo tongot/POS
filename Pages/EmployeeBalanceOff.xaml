@@ -1,0 +1,102 @@
+﻿<Page x:Class="POS.EmployeeBalanceOff"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:POS"
+      mc:Ignorable="d" 
+      Height="450" Width="300"
+      Title="EmployeeBalanceOff">
+
+    <GroupBox Header="{Binding username}">
+        <StackPanel>
+
+            <TextBlock Text="{Binding error, FallbackValue=erro}" 
+                       FontSize="12" TextAlignment="Center" Foreground="{StaticResource OrangeDarken4Brush}"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                    <Button Command="{Binding btn_balance}" Content="Save" 
+                        Visibility="{Binding saving,Converter={local:visibilityConverter}}"
+                        Height="35" Background="{StaticResource Primary}" Margin="2"
+                        Foreground="{StaticResource FontLightBrush}"
+                        FontSize="16"
+                        />
+
+                    <Button Content="Update" Command="{Binding btn_update}" Grid.Column="2" 
+                        Visibility="{Binding saving,Converter={local:visibilityConverter}}"
+                        Height="35" Background="{StaticResource Success}" Margin="2"
+                        Foreground="{StaticResource FontLightBrush}"
+                        FontSize="16"
+                        />
+                </Grid>
+            <GroupBox Background="{StaticResource OrangeBrush}">
+                <StackPanel>
+                     <GroupBox Header="Select date of sale">
+                <StackPanel>
+                            <DatePicker  SelectedDate="{Binding date_of_sale}"/>
+                </StackPanel>
+            </GroupBox>
+                    <Button Command="{Binding btn_get_balance}" Content="Balance off" 
+                        Visibility="{Binding saving,Converter={local:visibilityConverter}}"
+                        Height="35" Background="{StaticResource Primary}" Margin="2"
+                        Foreground="{StaticResource FontLightBrush}"
+                        FontSize="12"
+                        />
+                </StackPanel>
+            </GroupBox>
+           
+            <GroupBox Header="Amount To Settle">
+                <StackPanel>
+                    <TextBox Text="{Binding amount_to_settle}" IsEnabled="False"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Actual Amount">
+                <StackPanel>
+                    <TextBox Text="{Binding actual_amount,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextAlignment="Right"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Settled">
+                <StackPanel>
+                    <TextBox Text="{Binding settled,  UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Comment">
+                <StackPanel>
+                    <TextBox Text="{Binding comment,  UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False"/>
+                </StackPanel>
+            </GroupBox>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Command="{Binding btn_balance}" Content="Save" 
+                        Visibility="{Binding saving,Converter={local:visibilityConverter}}"
+                        Height="35" Background="{StaticResource Primary}" Margin="2"
+                        Foreground="{StaticResource FontLightBrush}"
+                        FontSize="16"
+                        />
+                
+                <Button Content="Update" Command="{Binding btn_update}" Grid.Column="2" 
+                        Visibility="{Binding saving,Converter={local:visibilityConverter}}"
+                        Height="35" Background="{StaticResource Success}" Margin="2"
+                        Foreground="{StaticResource FontLightBrush}"
+                        FontSize="16"
+                        />
+            </Grid>
+            <TextBlock Text="{Binding authoriser,
+                FallbackValue=ttongoona}" 
+                       HorizontalAlignment="Center"
+                       Foreground="{StaticResource Danger}"
+                       FontSize="20"/>
+        </StackPanel>
+    </GroupBox>
+</Page>

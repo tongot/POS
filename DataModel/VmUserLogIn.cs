@@ -29,6 +29,8 @@ namespace POS
             IocContainer.Kenel.Get<AppViewModel>().CurrentUser.username = userCredential.username;
             IocContainer.Kenel.Get<AppViewModel>().CurrentUser.roles = userCredential.roles;
             IocContainer.Kenel.Get<AppViewModel>().CurrentUser.EmployeeId = userCredential.EmployeeId;
+            IocContainer.Kenel.Get<AppViewModel>().CurrentUser.branch_name = userCredential.branch_name;
+            IocContainer.Kenel.Get<AppViewModel>().CurrentUser.branch_id = userCredential.branch_id;
 
             IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.menuPage;
             IocContainer.Kenel.Get<AppViewModel>().NotLogged = false;
@@ -59,6 +61,8 @@ namespace POS
         public string username { get; set; }
         public int? EmployeeId { get; set; }
         public string error { get; set; }
+        public string branch_name { get; set; }
+        public int branch_id { get; set; }
         public List<string> roles { get; set; }
     }
 }

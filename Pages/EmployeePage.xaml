@@ -22,7 +22,7 @@
         <!--menu bar-->
         <Grid Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
-                <Button Background="Transparent" Grid.Column="0" FontSize="25" Command="{Binding btnBackHome}" Grid.Row="0" Margin="5">
+                <Button Background="Transparent" Grid.Column="0" FontSize="25" Command="{Binding backHomeBtn}" Grid.Row="0" Margin="5">
                     <StackPanel>
                         <Grid Width="70" Height="70">
                             <Grid.Background>

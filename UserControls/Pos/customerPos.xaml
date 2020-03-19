@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="POS.customerPos"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:POS"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" 
+                                  Header="Search"
+                                  Grid.ColumnSpan="2"
+                                  >
+
+            <StackPanel Margin="10 0 0 0">
+                <TextBox Text="{Binding textbox_customer_id,Mode=TwoWay, 
+                                    UpdateSourceTrigger=PropertyChanged}" 
+                                         x:Name="textbox_customer_id"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!--list box of  items to pay-->
+        <ScrollViewer Height="400" Grid.Row="1">
+            <ItemsControl x:Name="ListCustomer" ItemsSource="{Binding customers}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:CustomerName></local:CustomerName>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <Button Margin="4" Background="{StaticResource Warning}"
+                                      Content="Cancel" Foreground="{StaticResource FontLightBrush}"
+                                    FontSize="30" Grid.ColumnSpan="3" Grid.Row="3"
+                                    Command="{Binding btn_cancel_customer}"
+                                    />
+    </Grid>
+</UserControl>

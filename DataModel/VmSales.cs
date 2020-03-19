@@ -10,9 +10,26 @@ namespace POS
         ISales db;
         IProduct pdb;
 
-
+        #region public values 
         public ObservableCollection<salesView> sales { get; set; } = new ObservableCollection<salesView>();
-       
+        public decimal total_success_sales { get; set; } = 0;
+        public decimal total_failed_sales { get; set; } = 0;
+        public decimal total_void_sales { get; set; } = 0;
+        public int count_of_success { get; set; } = 0;
+        public int count_of_failed { get; set; } = 0;
+        public int count_of_void { get; set; } = 0;
+        public double rate_of_success { get; set; }
+        void clear_values()
+        {
+            total_failed_sales = 0;
+            total_success_sales = 0;
+            total_void_sales = 0;
+            count_of_void = 0;
+            count_of_success = 0;
+            count_of_failed = 0;
+        }
+        #endregion
+
 
         public VmSales()
         {
@@ -27,11 +44,30 @@ namespace POS
         /// <returns></returns>
         public ObservableCollection<salesView> getSales(VmSearchSaleFilter filter)
         {
+            clear_values();
             ObservableCollection<salesView> sales = new ObservableCollection<salesView>();
             foreach (var item in db.sales(setFilter(filter)))
             {
+                if (item.state == (int)SaleState.failed)
+                {
+                    total_failed_sales += item.TotalPrice;
+                    count_of_failed += 1;
+
+                }
+                if (item.state == (int)SaleState.Void)
+                {
+                    total_void_sales += item.TotalPrice;
+                    count_of_void += 1;
+                }
+                if (item.state == (int)SaleState.success)
+                {
+                    total_success_sales += item.TotalPrice;
+                    count_of_success += 1;
+
+                }
                 sales.Add(salesTosaleView(item));
             }
+             rate_of_success=count_of_success / (count_of_success + count_of_failed) * 100;
             return sales;
         }
         /// <summary>
@@ -85,16 +121,17 @@ namespace POS
         public DateTime DateOfSale { get; set; }
         // public string customer { get; set; }
         public string employeeUsername { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public int Quantity { get; set; }
         public SaleState state { get; set; }
-        public double cashReceived { get; set; }
-        public double change { get; set; }
+        public decimal cashReceived { get; set; }
+        public decimal change { get; set; }
         // public string comment { get; set; }
-        public double TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         public string Branch { get; set; }
         public string productCode { get; set; }
         public string productName { get; set; }
         public string customer { get; set; }
+      
     }
 }

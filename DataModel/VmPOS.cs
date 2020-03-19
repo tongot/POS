@@ -27,7 +27,7 @@ namespace POS
         }
         #region public properties
         public ObservableCollection<POSProduct> Cart { get; set; } = new ObservableCollection<POSProduct>();
-        public ObservableCollection<Customer> customers { get; set; } 
+        public ObservableCollection<Customer> customers { get; set; }
         public ObservableCollection<POSProduct> ProductsSearched { get; set; } = new ObservableCollection<POSProduct>();
 
         public ObservableCollection<POSProduct> HoldList { get; set; } = new ObservableCollection<POSProduct>();
@@ -36,23 +36,37 @@ namespace POS
         public bool executeVoid = false;
         public string searchCustomer { get; set; } = "";
         public int? customerId { get; set; }
-        public string refNumber { get; set; }
+        public string refNumber { get; set; } = "";
         public string customerNationaiId { get; set; }
         //username of  the current user logged in details
         public VmUserLogIn user = IocContainer.Kenel.Get<AppViewModel>().CurrentUser;
-        double _totalPrice;
-        public double totalPrice
+        decimal _totalPrice;
+        public decimal totalPrice
         {
             get { return _totalPrice; }
             set { _totalPrice = Math.Round(value, 2); }
         }
-        
 
-        double _change;
-        public double change {
+
+        decimal _change;
+        public decimal change
+        {
             get { return _change; }
             set { _change = Math.Round(value, 2); }
         }
+        decimal _totalTax;
+        public decimal totalTax
+        {
+            get { return _totalTax; }
+            set { _totalTax = Math.Round(value, 2); }
+        }
+        decimal _totalDiscount;
+        public decimal totalDiscount
+        {
+            get { return _totalDiscount; }
+            set { _totalDiscount = Math.Round(value, 2); }
+        }
+
         List<int> salesIds = new List<int>();
         /// <summary>
         /// keep of the current iid sales
@@ -62,15 +76,7 @@ namespace POS
         #endregion
 
         #region methods
-        /// <summary>
-        /// get the product from database and add it to the chart
-        /// </summary>
-        /// <param name="code">product code to get</param>
-        /// <returns></returns>
-        public void AddProductTosell(string code)
-        {
-            Cart.Add(setProductPos(db.getProductByCode(code)));
-        }
+
         public void AddProductToSearch(string code)
         {
             foreach (var item in db.CodeLikeProducts(code))
@@ -82,32 +88,35 @@ namespace POS
                 ProductsSearched.Add(posp);
             }
         }
-        public bool AddProductCodeToCart(string code)
+        public bool AddProductToCart(string code)
         {
             saleError = string.Empty;
-           
             //set product
             var posp = setProductPos(db.GetProductByCode(code));
             //add product to list
             if (posp.ProductState != "Product not found")
             {
-                    var InCart = Cart.Where(x => x.ProductId == posp.ProductId).FirstOrDefault();
-                if (InCart!=null)
+                var InCart = Cart.Where(x => x.ProductId == posp.ProductId).FirstOrDefault();
+                if (InCart != null)
                 {
                     InCart.quantity += 1;
-                    InCart.price += posp.price;
-                    totalPrice+= posp.price;
-                    return true;
                 }
-                totalPrice += posp.price;
-                Cart.Add(posp);
+                else
+                {
+                    Cart.Add(posp);
+                }
+                
+                totalPrice=Cart.Sum(x=>x.totalPrice);
+                totalDiscount = Cart.Sum(x => x.totalDiscount);
+                totalTax = Cart.Sum(x => x.totalTax);
                 return true;
             }
-            else { 
-                saleError = "Product Not Found"; 
-                return false; 
+            else
+            {
+                saleError = "Product Not Found";
+                return false;
             }
-           
+
         }
         /// <summary>
         /// convert the product object from data context to POSproduct
@@ -126,6 +135,8 @@ namespace POS
                 posp.ProductId = product.ProductId;
                 posp.quantity = 1;
                 posp.price = product.Price;
+                posp.tax = product.taxToPay;
+                posp.discount = product.discount;
             }
             else
             {
@@ -141,18 +152,19 @@ namespace POS
         /// <param name="change">change to customer</param>
         ///  <param name="fromHold">if the transaction is from hold list or not</param>
         /// <returns></returns>
-        public async Task setSale(double cashRecieved, double change,bool fromHold)
+        public async Task setSale(decimal cashRecieved, decimal change, bool fromHold)
         {
-            if(fromHold)
+            if (fromHold)
             {
                 processHold(cashRecieved, change);
                 return;
             }
-             //check for stock
+            //check for stock
             if (stockAvailable(false))
             {
                 executeVoid = true;
                 string Ref = salesRef();
+                refNumber = Ref;
                 foreach (var item in Cart)
                 {
 
@@ -163,11 +175,7 @@ namespace POS
                     s.Branch = "";
                     s.customer = "customer test";
                     s.DateOfSale = DateTime.Now;
-                    
                     s.Ref = Ref;
-                    //set ref number for reciept
-                    refNumber = Ref;
-
                     s.employeeUsername = user.username;
                     s.EmployeeId = 2009;//user.EmployeeId.Value;
                     s.Price = item.price / item.quantity;
@@ -181,7 +189,7 @@ namespace POS
                     s.productName = item.ProductName;
                     if (customerId != null)
                     {
-                         s.CustomerId = customerId.Value;
+                        s.CustomerId = customerId.Value;
                         s.customer = customerNationaiId;
                     }
                     await dbs.addSale(s);
@@ -194,7 +202,8 @@ namespace POS
 
                 }
             }
-            else {
+            else
+            {
                 saleError = "stock fall, check for stock warning on list";
                 executeVoid = false;
                 return;
@@ -222,7 +231,7 @@ namespace POS
                 }
                 //sales.Remove(item);
             }
-            
+
             Cart.Clear();
 
         }
@@ -252,6 +261,8 @@ namespace POS
             //Chart.Clear();
             saleError = string.Empty;
             totalPrice = 0;
+            totalDiscount = 0;
+            totalTax = 0;
             change = 0;
         }
         /// <summary>
@@ -268,7 +279,7 @@ namespace POS
         /// </summary>
         /// <param name="cash"></param>
         /// <param name="change"></param>
-        void processHold(double cash,double change)
+        void processHold(decimal cash, decimal change)
         {
             foreach (var item in Cart)
             {
@@ -279,18 +290,18 @@ namespace POS
                 sale.TotalPrice = item.price;
                 sale.cashReceived = cash;
                 sale.change = change;
-                
+
                 dbs.updateSaleState(sale);
-               
+
             }
             // clear the hold list after processing
             HoldList.Clear();
         }
         public void getCustomer()
         {
-            customers= new ObservableCollection<Customer>(dbc.getCustomerByIdLike(searchCustomer));
+            customers = new ObservableCollection<Customer>(dbc.getCustomerByIdLike(searchCustomer));
         }
-      
+
         #endregion
     }
 }

@@ -5,11 +5,11 @@ using System.Windows.Controls;
 namespace POS
 {
     /// <summary>
-    /// Interaction logic for keyPadButtons.xaml
+    /// Interaction logic for PosStartScreen.xaml
     /// </summary>
-    public partial class keyPadButtons : UserControl
+    public partial class PosStartScreen : UserControl
     {
-        public keyPadButtons()
+        public PosStartScreen()
         {
             InitializeComponent();
         }

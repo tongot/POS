@@ -49,10 +49,10 @@
             </StackPanel>
             
         </Grid>
-        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Border Grid.Row="1">
             <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Content="{Binding AppViewModel.CurrentPage, Source={x:Static local:ViewModelLocator.Instance}, Converter={local:PageValueConverter},ConverterParameter=5}">
             </Frame>       
-        </ScrollViewer>
+        </Border>
    
         <Grid Grid.Row="2">
             <Button Content="Open Connection Settings" 

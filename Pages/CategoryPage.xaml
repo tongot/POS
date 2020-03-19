@@ -87,8 +87,7 @@
 
         <!--detail view-->
         <Grid Grid.Row="1" Grid.Column="1">
-
-            <Grid >
+            <Grid>
                 <local:CategoryDetails Visibility="{Binding showDetails, Converter={local:visibilityConverter}}"></local:CategoryDetails>
                 <local:addCategory  Visibility="{Binding showAdd, Converter={local:visibilityConverter}}"/>
                 <local:EditCategory  Visibility="{Binding showEdit, Converter={local:visibilityConverter}}"/>
