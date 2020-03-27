@@ -67,11 +67,11 @@
             </GroupBox>
             
             <!--filter selection remove-->
-            <Grid  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom">
+            <!--<Grid  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom">
                 <StackPanel Orientation="Horizontal">
                     <Button Content="taku" Padding="4" Margin="4" Height="30"></Button>
                 </StackPanel>
-            </Grid>
+            </Grid>-->
 
         </Grid>
 
@@ -103,6 +103,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+
                 </Grid.ColumnDefinitions>
 
                     <Border Margin="8" Grid.Column="0" Grid.Row="0" CornerRadius="4" Background="{StaticResource Success}">
@@ -123,7 +126,43 @@
                             </StackPanel>
                         </StackPanel>
                     </Border>
-                <Border Margin="8" Grid.Column="1" Grid.Row="0" CornerRadius="4" Background="{StaticResource Primary}">
+                <Border Margin="8" Grid.Column="1" Grid.Row="0"  CornerRadius="4" Background="{StaticResource Danger}">
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Center" Foreground="{StaticResource FontLightBrush}"
+                    Text="Tax" FontWeight="Bold" FontSize="15"/>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Orientation="Horizontal">
+                            <TextBlock Foreground="{StaticResource FontLightBrush}" 
+                           FontSize="30"
+                           Text="{Binding tax, FallbackValue=200000}"/>
+
+                            <TextBlock Foreground="{StaticResource FontLightBrush}" 
+                           FontSize="20"
+                           Text="units"
+                           VerticalAlignment="Bottom"
+                           />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Margin="8" Grid.Column="2" Grid.Row="0"  CornerRadius="4" Background="{StaticResource Warning}">
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Center" Foreground="{StaticResource FontLightBrush}"
+                    Text="Discounts" FontWeight="Bold" FontSize="15"/>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        Orientation="Horizontal">
+                            <TextBlock Foreground="{StaticResource FontLightBrush}" 
+                           FontSize="30"
+                           Text="{Binding discounts, FallbackValue=200000}"/>
+
+                            <TextBlock Foreground="{StaticResource FontLightBrush}" 
+                           FontSize="20"
+                           Text="units"
+                           VerticalAlignment="Bottom"
+                           />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Margin="8" Grid.Column="3" Grid.Row="0"  CornerRadius="4" Background="{StaticResource Primary}">
                     <StackPanel>
                         <TextBlock HorizontalAlignment="Center" Foreground="{StaticResource FontLightBrush}"
                     Text="Units Sold" FontWeight="Bold" FontSize="15"/>
@@ -141,7 +180,7 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <Grid Grid.Row="1" Margin="2" Grid.ColumnSpan="2">
+                <Grid Grid.Row="1" Margin="2" Grid.ColumnSpan="4">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
@@ -154,7 +193,7 @@
                     <TextBlock Foreground="{StaticResource FontDarkBrush}" Text="Product Counts"
                                TextAlignment="Center" Grid.Column="1" FontSize="20" FontWeight="Bold"
                                />
-                    <lvc:CartesianChart  Grid.Row="1" Margin="2" Grid.Column="1"  Foreground="Black" Background="LightGray"
+                    <lvc:CartesianChart  Grid.Row="1" Margin="2" Grid.Column="2" Grid.ColumnSpan="2" Foreground="Black" Background="LightGray"
                                      Series="{Binding SeriesCollection_1}" LegendLocation="Bottom">
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis Title="Number products sold" LabelFormatter="{Binding YFormatter_1}"></lvc:Axis>

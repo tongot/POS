@@ -22,6 +22,7 @@ namespace POS
         public Splash()
         {
             InitializeComponent();
+            DataContext = new splashViewModel();
         }
     }
 }

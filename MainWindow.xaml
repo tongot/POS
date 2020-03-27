@@ -29,7 +29,7 @@
                       
                        FontSize="16"
                        Margin="10"/>
-            <StackPanel Margin="4" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+            <!--<StackPanel Margin="4" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Margin="2" Height="22" Content="Sign Out" Command="{Binding btnSignOut}" 
                         FontSize="12" Background="{StaticResource Primary}"  
                         Foreground="White" Padding="4"
@@ -45,7 +45,7 @@
                     Source={x:Static local:ViewModelLocator.Instance},
                     Converter={local:visibilityConverter}}"
                             />
-            </StackPanel>
+            </StackPanel>-->
             </StackPanel>
             
         </Grid>

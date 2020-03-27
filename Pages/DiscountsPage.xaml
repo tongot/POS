@@ -38,7 +38,12 @@
 
             <!--menu bar-->
             <StackPanel Grid.Row="0" Grid.Column="1" Height="60" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button Background="Transparent" Command="{Binding btnAddNew}" Margin="2">
+                <Button Background="Transparent" Command="{Binding btnAddNew}" Margin="2"
+                        Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Create}"
+                        >
                     <StackPanel>
                         <Grid Width="45" Height="45">
                             <Grid.Background>

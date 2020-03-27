@@ -123,6 +123,9 @@
     <Compile Include="Pages\CategoryPage.xaml.cs">
       <DependentUpon>CategoryPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ChangePassWord.xaml.cs">
+      <DependentUpon>ChangePassWord.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Customers.xaml.cs">
       <DependentUpon>Customers.xaml</DependentUpon>
     </Compile>
@@ -140,6 +143,9 @@
     </Compile>
     <Compile Include="Pages\Pos2Page.xaml.cs">
       <DependentUpon>Pos2Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Stocks.xaml.cs">
+      <DependentUpon>Stocks.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\TaxPage.xaml.cs">
       <DependentUpon>TaxPage.xaml</DependentUpon>
@@ -218,6 +224,9 @@
     </Compile>
     <Compile Include="UserControls\Dash_board\master_dashboard.xaml.cs">
       <DependentUpon>master_dashboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\filterForStock.xaml.cs">
+      <DependentUpon>filterForStock.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\ListOfProductPos.xaml.cs">
       <DependentUpon>ListOfProductPos.xaml</DependentUpon>
@@ -356,6 +365,7 @@
     <Compile Include="ValueConvertors\visibilityConverter.cs" />
     <Compile Include="ViewModel\Base\BaseViewModel.cs" />
     <Compile Include="ViewModel\Base\RelayCommand.cs" />
+    <Compile Include="ViewModel\changePasswords.cs" />
     <Compile Include="ViewModel\Charts\MasterChartViewModel.cs" />
     <Compile Include="ViewModel\Dash_boardViewModel.cs" />
     <Compile Include="ViewModel\DiscountViewModel.cs" />
@@ -373,6 +383,8 @@
     <Compile Include="ViewModel\ProductViewModel.cs" />
     <Compile Include="ViewModel\SalePointViewmodel.cs" />
     <Compile Include="ViewModel\SalesViewModel.cs" />
+    <Compile Include="ViewModel\splashViewModel.cs" />
+    <Compile Include="ViewModel\stockViewModel.cs" />
     <Compile Include="ViewModel\TaxViewModel.cs" />
     <Compile Include="ViewModel\User.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -400,6 +412,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\ChangePassWord.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Customers.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -423,6 +439,10 @@
     <Page Include="Pages\Pos2Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Stocks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\TaxPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -543,6 +563,10 @@
     <Page Include="UserControls\Dash_board\master_dashboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\filterForStock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\ListOfProductPos.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -108,6 +108,8 @@ namespace POS
             s.TotalPrice = item.TotalPrice;
             s.productName = item.productName;
             s.customer = item.customer;
+            s.tax = item.totalTax;
+            s.discount = item.discount;
             return s;
         }
     }
@@ -132,6 +134,8 @@ namespace POS
         public string productCode { get; set; }
         public string productName { get; set; }
         public string customer { get; set; }
-      
+        public decimal tax { get; set; }
+        public decimal discount { get; set; }
+
     }
 }

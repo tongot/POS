@@ -30,7 +30,12 @@
                     <TextBlock  Margin="4" VerticalAlignment="Center" Foreground="White" FontSize="20" Text="{Binding Prod.ProductName,ValidatesOnDataErrors=True}"/>
                     <Grid Grid.Column="1">
                         <StackPanel HorizontalAlignment="Right" Margin="1"  Background="{StaticResource FontLightBrush}" Orientation="Horizontal">
-                            <Button Background="Transparent" Width="40" Height="40"  Command="{Binding btn_AddNewStock}" Margin="2">
+                            <Button Background="Transparent" Width="40" Height="40"  Command="{Binding btn_AddNewStock}" Margin="2"
+                                    Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Create}"
+                                    >
                                 New
                             </Button>
                             <Button Background="Transparent" Width="40" Height="40"  Command="{Binding btn_showstockclose}" Margin="2">
@@ -78,41 +83,74 @@
             </Grid>
 
             <!--detail view-->
-          
+
             <Grid Grid.Row="1" Grid.Column="1">
                 <Grid Visibility="{Binding stock_details, Converter={local:visibilityConverter}}">
+
                     <StackPanel>
-                   <GroupBox Header="Date of stock">
-                    <StackPanel>
+                        <GroupBox Visibility="{Binding show_update_price, Converter={local:visibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="Proceed with action" HorizontalAlignment="Center" Foreground="{StaticResource Danger}"/>
+                                <DockPanel HorizontalAlignment="Center">
+                                <Button Command="{Binding btn_save_newprice}" Width="100" Margin="2" Content="save" Background="{StaticResource Success}" 
+                                        Foreground="{StaticResource FontLightBrush}"
+                                        Height="25"/>
+                                <Button Command="{Binding btn_update_all}" Content="update all" Margin="2" Width="100" 
+                                        Background="{StaticResource Success}" Foreground="{StaticResource FontLightBrush}"
+                                        Height="25"/>
+                                <Button Command="{Binding btn_cancel_change_price}" Content="Cancel" Margin="2" Width="100"
+                                        Background="{StaticResource Danger}" Foreground="{StaticResource FontLightBrush}"
+                                        Height="25"/>
+                            </DockPanel>
+                            </StackPanel>
+                           
+                        </GroupBox>
+                        <GroupBox Header="Date of stock">
+                            <StackPanel>
                                 <TextBox Text="{Binding stocks_detail.date_of_stock}" IsEnabled="False"/>
-                    </StackPanel>
-                </GroupBox>
-                <GroupBox Header="Goods value">
-                    <StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Goods value">
+                            <StackPanel>
                                 <TextBox Text="{Binding stocks_detail.total_value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsEnabled="False"
                         TextAlignment="Right"/>
-                    </StackPanel>
-                </GroupBox>
-                <GroupBox Header="Quantity">
-                    <StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Quantity">
+                            <StackPanel>
                                 <TextBox Text="{Binding stocks_detail.quantity,  UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False"/>
-                    </StackPanel>
-                </GroupBox>
-                <GroupBox Header="Markup">
-                    <StackPanel>
-                                <TextBox Text="{Binding stocks_detail.markup,  UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False"/>
-                    </StackPanel>
-                </GroupBox>
-                    <GroupBox Header="Price">
-                        <StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Markup %">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding stocks_detail.markup,  UpdateSourceTrigger=PropertyChanged}"/>
+                                <Button Width="100" Grid.Column="1" Foreground="{StaticResource FontLightBrush}"
+                                        Command="{Binding btn_change_price}"
+                                        Content="Change" Height="25"
+                                        Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Update}"
+                                        />
+                            </Grid>
+
+                        </GroupBox>
+                        <GroupBox Header="Price">
+                            <StackPanel>
                                 <TextBox Text="{Binding stocks_detail.price,  UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False"/>
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Header="State">
-                        <StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="State">
+                            <StackPanel>
                                 <TextBox Text="{Binding stocks_detail.is_running_stock,  UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False"/>
-                        </StackPanel>
-                    </GroupBox>
+                            </StackPanel>
+                        </GroupBox>
                         <GroupBox Header="Running stock">
                             <StackPanel>
                                 <TextBox Text="{Binding stocks_detail.current_running_stock,  UpdateSourceTrigger=PropertyChanged}"  IsEnabled="False"/>
@@ -128,7 +166,7 @@
                 <Grid Visibility="{Binding stock_addNew, Converter={local:visibilityConverter}}">
                     <local:addNewStock></local:addNewStock>
                 </Grid>
-             
+
             </Grid>
         </Grid>
 

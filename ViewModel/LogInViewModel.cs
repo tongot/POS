@@ -23,7 +23,7 @@ namespace POS
         }
         /// <summary>
         /// log in to the system
-        /// password comes from the log in form 
+        /// password comes from the log in form itself as an obj
         /// </summary>
         private void login(object obj)
         {

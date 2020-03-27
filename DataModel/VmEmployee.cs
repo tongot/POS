@@ -224,10 +224,18 @@ namespace POS
             {
                 errors.Append("National Id Number is Required!\n");
             }
-            if (string.IsNullOrWhiteSpace(employee.Branch.Name))
+            if(employee.Branch!=null)
+            {
+             if (string.IsNullOrWhiteSpace(employee.Branch.Name))
+                        {
+                            errors.Append("Branch is Required!\n");
+                        }
+            }
+            else
             {
                 errors.Append("Branch is Required!\n");
             }
+           
             if (string.IsNullOrWhiteSpace(employee.Password))
             {
                 errors.Append("Password is Required!\n");

@@ -60,6 +60,11 @@ namespace POS
                 case ApplicationPage.balanceOfEmployee:
                     return new EmployeeBalanceOff();
 
+                case ApplicationPage.stockPage:
+                    return new Stocks();
+
+                case ApplicationPage.changePassPage:
+                    return new ChangePassWord();
                 default:
                     Debugger.Break();
                     return null;

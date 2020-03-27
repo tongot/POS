@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace POS
 {
-    public class SalePointViewmodel : BaseViewModel, IRequestFocus
+    public class SalePointViewmodel : BaseViewModel, IRequestFocus, IPrintReceipt
     {
 
 
@@ -19,14 +19,18 @@ namespace POS
         public ObservableCollection<Cart> CartItems { get; set; } = new ObservableCollection<Cart>();
         public ObservableCollection<Customer> customers { get; set; } = new ObservableCollection<Customer>();
         public event EventHandler<FocusRequestedEventArgs> FocusRequested;
+        public event EventHandler<PrintReceiptEventArgs> printOutReciept;
 
         string _amount_received;
-        public string textbox_pad {
-            get {
+        public string textbox_pad
+        {
+            get
+            {
                 return _amount_received;
             }
-            set {
-                if(value!=_amount_received)
+            set
+            {
+                if (value != _amount_received)
                 {
                     try
                     {
@@ -36,7 +40,7 @@ namespace POS
                             error("There are no products in Cart to sale");
                             return;
                         }
-                        if(amount_paid>_total_price)
+                        if (amount_paid > _total_price)
                         {
                             change = amount_paid - _total_price;
                         }
@@ -72,7 +76,8 @@ namespace POS
         public decimal total_price
         {
             get { return _total_price; }
-            set {
+            set
+            {
                 _total_price = Math.Round(value, 2);
                 if (amount_paid > 0)
                 {
@@ -115,7 +120,7 @@ namespace POS
                 if (_textbox_customer_id != value)
                 {
                     _textbox_customer_id = value;
-                    if(_textbox_customer_id.Length>5)
+                    if (_textbox_customer_id.Length > 5)
                     {
                         get_customer();
                     }
@@ -131,7 +136,7 @@ namespace POS
         ISales dbs;
         ICustomer dbc;
         string Ref;
-        decimal amount_paid=0;
+        decimal amount_paid = 0;
         int transaction_state = 0;
 
         static class customer
@@ -139,7 +144,7 @@ namespace POS
             public static int customer_id = 0;
             public static string customer_national_id = "";
         }
-        
+
         #endregion
 
         #region true false values
@@ -181,7 +186,7 @@ namespace POS
         public ICommand btn_show_customer_panel { get; set; }
         public ICommand btn_set_customer { get; set; }
         public ICommand btn_cancel_customer { get; set; }
-
+        public ICommand ExitBtn { get; set; }
         #endregion
         #region contructors
         public SalePointViewmodel()
@@ -216,6 +221,7 @@ namespace POS
             btn_cancel_customer = new RelayCommand(exit_customer);
             btn_set_customer = new RelayCommand(set_customer);
             btn_sale = new RelayCommand(sale_pressed);
+            ExitBtn = new RelayCommand(Exit);
 
         }
         #endregion
@@ -385,11 +391,20 @@ namespace POS
         #endregion
 
         #region functional buttons
+        private void Exit()
+        {
+            if (CartItems.Count() > 0)
+            {
+                error("Please clear items in cart before exit");
+                return;
+            }
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.menuPage;
+        }
         private void set_customer(object id)
         {
-            if(transaction_state==0)
+            if (transaction_state == 0)
             {
-                 var cs = customers.Where(x => x.CustomerId == (int)id).FirstOrDefault();
+                var cs = customers.Where(x => x.CustomerId == (int)id).FirstOrDefault();
                 customer.customer_id = cs.CustomerId;
                 customer.customer_national_id = cs.nationalId;
                 error($"Customer {cs.FullName} has been set");
@@ -399,7 +414,7 @@ namespace POS
             {
                 error("Can not set customer");
             }
-           
+
         }
         private void exit_customer()
         {
@@ -421,7 +436,7 @@ namespace POS
                 return;
             }
             error("");
-            if(!string.IsNullOrEmpty(Ref))
+            if (!string.IsNullOrEmpty(Ref))
             {
                 OnFocusRequested("AuthVoid");
                 if (IocContainer.Kenel.Get<AppViewModel>().void_auth_pass)
@@ -432,7 +447,7 @@ namespace POS
                         Sale sale = item;
                         item.state = (int)SaleState.Void;
                         //reverse quantity
-                        dbp.updateSaleGoods(item.ProductId, item.stock_id,true );
+                        dbp.updateSaleGoods(item.ProductId, item.stock_id, true);
                         dbs.updateSaleState(sale);
                     }
                     start_new_sale();
@@ -446,11 +461,11 @@ namespace POS
             {
                 error("No Sale to void");
             }
-            
+
         }
         private void sale_pressed()
         {
-            if(transaction_state!=1)
+            if (transaction_state != 1)
             {
                 error("No transaction found");
                 return;
@@ -458,15 +473,16 @@ namespace POS
             error("");
             if (!string.IsNullOrEmpty(Ref))
             {
-                    var sales = dbs.getSaleByRef(Ref);
-                    foreach (var item in sales)
-                    {
-                        Sale sale = item;
-                        item.state = (int)SaleState.success;
-                        //reverse quantity
-                        dbs.updateSaleState(sale);
-                    }
-                    start_new_sale();
+                var sales = dbs.getSaleByRef(Ref);
+                foreach (var item in sales)
+                {
+                    Sale sale = item;
+                    item.state = (int)SaleState.success;
+                    //reverse quantity
+                    dbs.updateSaleState(sale);
+                }
+                print();
+                start_new_sale();
             }
             else
             {
@@ -483,15 +499,15 @@ namespace POS
         private void add_product_to_cart()
         {
             error("");
-            Product product = dbp.GetProductByCode(_textbox_barcode, User.branch_id);
+            Product product = dbp.GetProductByCode(_textbox_barcode, User.branch_id.Value);
             if (product != null)
             {
                 //check if product is in stock
                 if (product.running_stock != null)
                 {
                     //update the quantity of products by decreasing
-                    dbp.updateSaleGoods(product.ProductId,product.running_stock.stock_id,false);
-                     dbp.productOnsaleUpdate(product.ProductId, User.username, true,1);
+                    dbp.updateSaleGoods(product.ProductId, product.running_stock.stock_id, false);
+                    dbp.productOnsaleUpdate(product.ProductId, User.username, true, 1, product.running_stock.stock_id);
 
                     //update totals
                     total_tax += product.taxToPay;
@@ -542,32 +558,32 @@ namespace POS
 
         private void enter_sale()
         {
-            if(transaction_state==0)
+            if (transaction_state == 0)
             {
                 error("");
-                    if (CartItems.Count < 1)
-                    {
-                       error("There are no items to sale");
-                        OnFocusRequested(nameof(textbox_barcode));
-                        return;
-                    }
-                    if(amount_paid<_total_price)
-                    {
-                        error("Insufficient funds");
-                        OnFocusRequested(nameof(textbox_pad));
-                        return;
-                    }
-                    record_sale();
-                    show_adjust_btn = false;
-                    error("transaction in pending");
-                    transaction_state = 1;
-                    customer.customer_id = 0;
+                if (CartItems.Count < 1)
+                {
+                    error("There are no items to sale");
+                    OnFocusRequested(nameof(textbox_barcode));
+                    return;
+                }
+                if (amount_paid < _total_price)
+                {
+                    error("Insufficient funds");
+                    OnFocusRequested(nameof(textbox_pad));
+                    return;
+                }
+                record_sale();
+                show_adjust_btn = false;
+                error("transaction in pending");
+                transaction_state = 1;
+                customer.customer_id = 0;
             }
             else
             {
                 error("please complete the current sale by pressing SALE, HOLD or VOID");
             }
-           
+
 
         }
 
@@ -575,8 +591,8 @@ namespace POS
         {
             int product_id = (int)id;
             var item = CartItems.Where(x => x.product_id == product_id).FirstOrDefault();
-            dbp.updateSaleGoods(product_id,item.stock_id,true);
-            dbp.productOnsaleUpdate(product_id, User.username, false,1);
+            dbp.updateSaleGoods(product_id, item.stock_id, true);
+            dbp.productOnsaleUpdate(product_id, User.username, false, 1, item.stock_id);
 
             item.quantity -= 1;
             decrease_totals(item);
@@ -594,7 +610,7 @@ namespace POS
             }
             var item = CartItems.Where(x => x.product_id == product_id).FirstOrDefault();
             dbp.updateSaleGoods(product_id, item.stock_id, false);
-            dbp.productOnsaleUpdate(product_id, User.username, true,1);
+            dbp.productOnsaleUpdate(product_id, User.username, true, 1, item.stock_id);
 
             item.quantity += 1;
             increase_totals(item);
@@ -676,7 +692,7 @@ namespace POS
                 sale.DateOfSale = DateTime.Now;
                 sale.Ref = Ref;
                 sale.employeeUsername = User.username;
-                sale.EmployeeId = User.user_id;//user.EmployeeId.Value;
+                sale.EmployeeId = User.user_id.Value;//user.EmployeeId.Value;getrunni
                 sale.Price = item.price;
                 sale.Quantity = item.quantity;
                 sale.state = (int)SaleState.failed;
@@ -688,14 +704,16 @@ namespace POS
                 sale.productName = item.product_name;
                 sale.stock_id = item.stock_id;
                 sale.runningDate = IocContainer.Kenel.Get<AppViewModel>().running_date;
+                sale.totalTax = item.tax_on_product;
+                sale.discount = item.discount_on_product;
                 if (customer.customer_id != 0)
                 {
                     sale.CustomerId = customer.customer_id;
                     sale.customer = customer.customer_national_id;
                 }
-                
+
                 await dbs.addSale(sale);
-                await dbp.productOnsaleUpdate(item.product_id, User.username, false, item.quantity);
+                await dbp.productOnsaleUpdate(item.product_id, User.username, false, item.quantity, item.stock_id);
 
             }
 
@@ -723,6 +741,10 @@ namespace POS
         protected virtual void OnFocusRequested(string propertyName)
         {
             FocusRequested?.Invoke(this, new FocusRequestedEventArgs(propertyName));
+        }
+        protected virtual void print()
+        {
+            printOutReciept?.Invoke(this, new PrintReceiptEventArgs(CartItems.ToList(), total_price, change, User.username, Ref, total_discount, total_tax));
         }
         #endregion
     }

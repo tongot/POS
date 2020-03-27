@@ -40,16 +40,55 @@ namespace POS
         public ICommand filterVisibleBtn { get; set; }
         public ICommand btnEdit { get; set; }
         public ICommand btnAdd { get; set; }
+
+
+        #endregion
+        #region public properties
+        public VmProduct Prod { get; set; } = new VmProduct();
+        public VmProduct EditProduct { get; set; } = new VmProduct();
+        public VmCategory category { get; set; } = new VmCategory();
+        public VmBranch branch { get; set; } = new VmBranch();
+        public ObservableCollection<VmProduct> listProduct { get; set; } = new ObservableCollection<VmProduct>();
+        public string ErrorForProduct { get; set; }
+
+        public decimal valueOfgoods { get; set; }
+        public int quantityOfGoods { get; set; }
+
+        #region filters values
+        public string searchString { get; set; }
+        public VmProductSearchFilter filterValues { get; set; } = new VmProductSearchFilter();
+
+        #endregion
+
+        #region view behaviour
+        public bool sideBarVisible { get; set; } = false;
+        public bool addBtnVisible { get; set; } = false;
+        public bool editBtnVisible { get; set; } = false;
+        public int itemsPerPage { get; set; } = 10;
+        public bool filterVisible { get; set; } = false;
+        public int Page { get; set; } = 1;
+        public bool showDetails { get; set; } = false;
+        public bool showEdit { get; set; } = false;
+        public bool showAdd { get; set; } = false;
+        public bool showStock { get; set; } = false;
+        public bool stock_details { get; set; } = true;
+        public bool stock_addNew { get; set; } = false;
+
+        #endregion    
+        #endregion
+        #region stock managment
         public ICommand btn_showstock { get; set; }
         public ICommand btn_showstockclose { get; set; }
         public ICommand btn_AddNewStock { get; set; }
         public ICommand btn_CloseNewStock { get; set; }
         public ICommand btn_SaveNewStock { get; set; }
         public ICommand btn_get_stockdetail { get; set; }
+        public ICommand btn_change_price { get; set; }
+        public ICommand btn_cancel_change_price { get; set; }
+        public ICommand btn_save_newprice { get; set; }
+        public ICommand btn_update_all { get; set; }
 
-        #endregion
-        #region public properties
-        #region stock managment
+        public bool show_update_price { get; set; }
         public ObservableCollection<stock> stocks { get; set; }
         public stock stock_item { get; set; } = new stock();
         public stock stocks_detail { get; set; }
@@ -61,14 +100,15 @@ namespace POS
         public decimal stock_id { get; set; }
 
         int _quantity;
-        public int quantity {
+        public int quantity
+        {
             get
             {
                 return _quantity;
             }
             set
             {
-                if(_quantity!= value)
+                if (_quantity != value)
                 {
                     _quantity = value;
                     total_value = price * _quantity;
@@ -77,17 +117,18 @@ namespace POS
         }
         public decimal total_value { get; set; }
         decimal _mark_up;
-        public decimal mark_up {
+        public decimal mark_up
+        {
             get
             {
                 return _mark_up;
             }
             set
             {
-                if(_mark_up!= value)
+                if (_mark_up != value)
                 {
                     _mark_up = value;
-                    price = purchase_price +(_mark_up / 100 * purchase_price);
+                    price = purchase_price + (_mark_up / 100 * purchase_price);
                 }
             }
         }
@@ -99,7 +140,7 @@ namespace POS
                 return;
             }
 
-            Stock new_stock  = new Stock();
+            Stock new_stock = new Stock();
 
             new_stock.date_of_stock = DateTime.Now;
             new_stock.ProductId = Prod.ProductId;
@@ -108,13 +149,22 @@ namespace POS
             new_stock.markup = mark_up;
             new_stock.is_running_stock = false;
             new_stock.purchase_price = purchase_price;
-            new_stock.quantity =quantity;
+            new_stock.quantity = quantity;
             new_stock.total_value = total_value;
             new_stock.current_running_stock = quantity;
             new_stock.batch_number = stockBatchNo();
+            new_stock.last_update_date = DateTime.Now;
 
             dbs.addNewStock(new_stock);
             Prod.updateProductStockUp(new_stock.ProductId, new_stock.quantity, new_stock.total_value);
+
+            price = 0;
+            mark_up = 0;
+            quantity = 0;
+            total_value = 0;
+            purchase_price = 0;
+            branch.BranchId = 0;
+
             showStockbtn();
 
         }
@@ -125,11 +175,11 @@ namespace POS
         }
         public string ValidateNewStock(ProductViewModel prod)
         {
-           var Errors = new StringBuilder();
-            decimal markup,purchasePrice;
+            var Errors = new StringBuilder();
+            decimal markup, purchasePrice;
             int quantity_;
-       
-            if (branch.BranchId==0)
+
+            if (branch.BranchId == 0)
             {
                 Errors.Append("*Branch Name is a required field\n");
             }
@@ -179,41 +229,76 @@ namespace POS
             stock_details = true;
             stock_addNew = false;
         }
-        #endregion
-        public VmProduct Prod { get; set; } = new VmProduct();
-        public VmProduct EditProduct { get; set; } = new VmProduct();
-        public VmCategory category { get; set; } = new VmCategory();
-        public VmBranch branch { get; set; } = new VmBranch();
-        public ObservableCollection<VmProduct> listProduct { get; set; } = new ObservableCollection<VmProduct>();
-        public int? stockChange { get; set; }
-        public string stockChangeError { get; set; }
-        public string ErrorForProduct { get; set; }
+        private void changePrice()
+        {
+            show_update_price = true;
+        }
+        private void cancelChangePrice()
+        {
+            show_update_price = false;
+        }
+        private void saveNewPrice()
+        {
+            if(stocks_detail.quantity>0)
+            {
+                    dbs.updatePrice(setNewPrice(),false);
+                    showStockbtn();
+            }
         
-        public decimal valueOfgoods { get; set; }
-        public int quantityOfGoods { get; set; }
-        
-        #region filters values
-        public string searchString { get; set; }
-        public VmProductSearchFilter filterValues { get; set; }= new VmProductSearchFilter();
+            
+        }
+        private void saveAllNewPrice()
+        {
+            if (stocks_detail.quantity > 0)
+            {
+                dbs.updatePrice(setNewPrice(), true);
+                showStockbtn();
+            }
+        }
+        PriceChangeData setNewPrice()
+        {
+            PriceChangeData price = new PriceChangeData();
+            price.branch_id = stocks_detail.BranchId;
+            price.product_id = stocks_detail.ProductId;
+            price.new_markup = stocks_detail.markup;
+            price.new_price = stocks_detail.purchase_price + (stocks_detail.markup / 100 * stocks_detail.purchase_price);
+            price.edited_by = User.username;
+            price.stock_id = stocks_detail.stock_id;
+            price.batch_no = stocks_detail.batch_number;
+            return price;
+        }
+        private void showStockbtn()
+        {
+            showAdd = false;
+            showEdit = false;
+            showDetails = false;
+            showStock = true;
+            stock_addNew = false;
+            stock_details = true;
+            show_update_price = false;
+            //get the stocks for the current product
+            if(stocks!=null)
+            {
+                stocks.Clear();
+            }
+            stocks = new ObservableCollection<stock>(stock_item.setStock(Prod.ProductId));
+            stocks_detail = new stock();
+            if (stocks.Count > 0)
+            {
+                stocks_detail = stocks.FirstOrDefault();
+                stocks_detail.is_selected = true;
+            }
 
+        }
+        private void closeStock()
+        {
+            showAdd = false;
+            showEdit = false;
+            showDetails = true;
+            showStock = false;
+        }
         #endregion
 
-        #region view behaviour
-        public bool sideBarVisible { get; set; } = false;
-        public bool addBtnVisible { get; set; } = false;
-        public bool editBtnVisible { get; set; } = false;
-        public int itemsPerPage { get; set; } = 10;
-        public bool filterVisible { get; set; } = false;
-        public int Page { get; set; } = 1;
-        public bool showDetails { get; set; } = false;
-        public bool showEdit { get; set; } = false;
-        public bool showAdd { get; set; } = false;
-        public bool showStock { get; set; } = false;
-        public bool stock_details { get; set; } = true;
-        public bool stock_addNew { get; set; } = false;
-
-        #endregion    
-        #endregion
         #region constractor  
         public ProductViewModel(IDialogService dialogService)
         {
@@ -242,10 +327,13 @@ namespace POS
             btn_AddNewStock = new RelayCommand(openNewStock);
             btn_SaveNewStock = new RelayCommand(addNewStock);
             btn_get_stockdetail = new RelayCommand(getBatchdetail);
-
-        #endregion
+            btn_cancel_change_price = new RelayCommand(cancelChangePrice);
+            btn_change_price = new RelayCommand(changePrice);
+            btn_save_newprice = new RelayCommand(saveNewPrice);
+            btn_update_all = new RelayCommand(saveAllNewPrice);
+            #endregion
         }
-    #endregion
+         #endregion
     #region methods
         private void closeNewStock()
         {
@@ -486,7 +574,7 @@ namespace POS
         private void delete()
         {
            
-            var viewModel = new DialogViewModel("Are sure you want to delete this record");
+            var viewModel = new DialogViewModel("Are sure you want to delete this record\n Please note:\n-all stocks and sales of this product will also be deleted");
             bool? result = dialogService.ShowDialog(viewModel);
             if (result == true)
             {
@@ -516,36 +604,12 @@ namespace POS
             filterValues.maxTotalValue = 0;
         }
 
-        private void showStockbtn()
-        {
-            showAdd = false;
-            showEdit = false;
-            showDetails = false;
-            showStock = true;
-            stock_addNew = false;
-            stock_details = true;
-
-            //get the stocks for the current product
-            stocks = new ObservableCollection<stock>(stock_item.setStock(Prod.ProductId));
-            if(stocks.Count>0)
-            {
-                stocks_detail = stocks.FirstOrDefault();
-                stocks_detail.is_selected = true;
-            }
-            
-        }
-        private void closeStock()
-        {
-            showAdd = false;
-            showEdit = false;
-            showDetails = true;
-            showStock = false;
-        }
+       
         public class stock: BaseViewModel
         {
             IStock dbs = new StockApp();
             public Guid stock_id { get; set; }
-            public DateTime date_of_stock { get; set; }
+            public DateTime? date_of_stock { get; set; }
             public int quantity { get; set; }
             public decimal purchase_price { get; set; }
             public decimal price { get; set; }

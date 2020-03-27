@@ -16,7 +16,12 @@
 
         <Border Grid.ColumnSpan="2" Background="{StaticResource OrangeLighten1Brush}" CornerRadius="3">
             <StackPanel HorizontalAlignment="Right" Margin="1"  Background="{StaticResource FontLightBrush}" Orientation="Horizontal">
-                <Button Background="Transparent" Command="{Binding btnEdit}" Margin="2">
+                <Button Background="Transparent" Command="{Binding btnEdit}" Margin="2"
+                        Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Update}"
+                        >
                     <StackPanel>
                         <Grid Width="38" Height="38">
                             <Grid.Background>
@@ -26,7 +31,11 @@
 
                     </StackPanel>
                 </Button>
-                <Button Background="Transparent" Command="{Binding btnDelete}" Margin="2">
+                <Button Background="Transparent" Command="{Binding btnDelete}" Margin="2"
+                        Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Delete}">
                     <StackPanel>
                         <Grid Width="38" Height="38">
                             <Grid.Background>

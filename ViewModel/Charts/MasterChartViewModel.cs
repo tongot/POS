@@ -25,6 +25,8 @@ namespace POS
         public string dates_error { get; set; } = "";
         public decimal sales_revenue { get; set; }
         public int sold_units { get; set; }
+        public decimal tax { get; set; }
+        public decimal discounts { get; set; }
         #endregion
 
         #region commands
@@ -169,6 +171,9 @@ namespace POS
             getChartSeries(data);
             sales_revenue = data.total_sales_revenue;
             sold_units = data.number_of_products;
+            tax = data.total_tax;
+            discounts = data.discount;
+            
         }
     }
 };

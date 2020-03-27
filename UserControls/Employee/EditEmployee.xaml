@@ -63,7 +63,7 @@
                          Foreground="{StaticResource LightTextBrush}"
                          Text="{Binding emplo.employee.Address}"/>
                 <TextBlock Text="Branch Name" Foreground="{StaticResource OrangeDarken1Brush}"/>
-                <TextBox IsEnabled="True" 
+                <TextBox IsEnabled="False" 
                          Foreground="{StaticResource LightTextBrush}"
                          Text="{Binding emplo.employee.BranchName}"/>
                 <TextBlock Text="Select Branch" Foreground="{StaticResource OrangeDarken1Brush}"/>

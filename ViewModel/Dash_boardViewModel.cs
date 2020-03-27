@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Ninject;
+using POS.Ioc;
+using System;
 using System.Collections.Generic;
 
 using System.Windows.Input;
@@ -7,17 +9,17 @@ namespace POS
 {
     public class Dash_boardViewModel:BaseViewModel
     {
-        public ICommand test_btn { get; set; }
-        public string test_string { get; set; } = "";
+        public ICommand backHomeBtn { get; set; }
+
         
         public Dash_boardViewModel()
         {
-            test_btn = new RelayCommand(test);
+            backHomeBtn = new RelayCommand(backHome);
         }
 
-        private void test()
+        private void backHome()
         {
-            test_string = "wala";
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.menuPage;
         }
     }
 }

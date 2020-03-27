@@ -12,6 +12,7 @@ namespace POS
         public Dash_Board()
         {
             InitializeComponent();
+            DataContext = new Dash_boardViewModel();
         }
     }
 }

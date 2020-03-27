@@ -39,7 +39,12 @@
             </Button>
             <Button Grid.Column="0" Command="{Binding toEmployees}"
                     Background="{StaticResource OrangeLighten1Brush}" 
-                    FontSize="25" Grid.Row="1" Margin="5">
+                    FontSize="25" Grid.Row="1" Margin="5"
+                     Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Employee}"
+                    >
                 <StackPanel HorizontalAlignment="Left">
                     <Grid Width="100" Height="100">
                         <Grid.Background>
@@ -51,7 +56,8 @@
             </Button>
             <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toSettings}"
                     Grid.Column="0" FontSize="25" Grid.Row="2" Margin="5"
-                     Visibility="{Binding AppViewModel.CurrentUser.roles, Source={x:Static local:ViewModelLocator.Instance}, 
+                     Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
                     Converter={local:RolesViewConveter}, 
                     ConverterParameter=Settings}"
                     >
@@ -146,16 +152,24 @@
             <StackPanel Grid.Row="2" Grid.Column="2">
                 <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toTaxes}" 
                      FontSize="25" Margin="5"
-                        Height="70"
+                        Height="80"
+                         Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Tax}"
                     >
                     <StackPanel>
                         <TextBlock Foreground="#000"><Run Text="Tax"/></TextBlock>
                     </StackPanel>
                 </Button>
                 <Button Background="{StaticResource OrangeLighten1Brush}" 
+                         Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Discount}"
                     Command="{Binding toDiscount}" 
                     FontSize="25"  Margin="5"
-                        Height="70"
+                        Height="80"
                     >
                     <StackPanel>
                         <TextBlock Foreground="#000"><Run Text="Discount"/></TextBlock>
@@ -165,6 +179,10 @@
 
             <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toDashboards}" 
                     Grid.Column="3" FontSize="25" Grid.Row="0" Margin="5"
+                     Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Dashboard}"
                     >
                 <StackPanel>
                     <Grid Width="70" Height="100">
@@ -175,7 +193,43 @@
                     <TextBlock Foreground="#000"><Run Text="Dashboards"/></TextBlock>
                 </StackPanel>
             </Button>
-
+            
+            <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding toStocks}" 
+                    Grid.Column="3" FontSize="25" Grid.Row="2" Margin="5"
+                     Visibility="{Binding AppViewModel.CurrentUser.roles, 
+                Source={x:Static local:ViewModelLocator.Instance}, 
+                    Converter={local:RolesViewConveter}, 
+                    ConverterParameter=Stocks}"
+                    >
+                <StackPanel>
+                    <Grid Width="70" Height="100">
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Images/buy-clipart-customer-buying-6-original.png"/>
+                        </Grid.Background>
+                    </Grid>
+                    <TextBlock Foreground="#000"><Run Text="Stocks"/></TextBlock>
+                </StackPanel>
+            </Button>
+            <StackPanel Grid.Row="1" Grid.Column="3">
+                <Button Background="{StaticResource OrangeLighten1Brush}" Command="{Binding tochangePass }" 
+                     FontSize="25" Margin="5"
+                        Height="80"
+                    >
+                    <StackPanel>
+                        <TextBlock TextAlignment="Center" Foreground="#000"><Run Text="Change"/></TextBlock>
+                        <TextBlock Foreground="#000"><Run Text="Password"/></TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Background="{StaticResource OrangeLighten1Brush}" 
+                    Command="{Binding btnSignout}" 
+                    FontSize="25"  Margin="5"
+                        Height="80"
+                    >
+                    <StackPanel>
+                        <TextBlock Foreground="#000"><Run Text="Sign out"/></TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel >
             <!---->
         </Grid>
     </Grid>

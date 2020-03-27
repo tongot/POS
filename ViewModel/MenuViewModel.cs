@@ -1,4 +1,5 @@
-﻿using Ninject;
+﻿using AppDatabase;
+using Ninject;
 using POS.Ioc;
 using System.Windows.Input;
 
@@ -9,6 +10,7 @@ namespace POS
     /// </summary>
     public class MenuViewModel
     {
+        IEmployee dbe;
         public ICommand toProducts { get; set; }
         public ICommand toPos { get; set; }
         public ICommand toSales { get; set; }
@@ -20,10 +22,13 @@ namespace POS
         public ICommand toDiscount { get; set; }
         public ICommand toSettings { get; set; }
         public ICommand toDashboards { get; set; }
-
+        public ICommand toStocks { get; set; }
+        public ICommand btnSignout { get; set; }
+        public ICommand tochangePass { get; set; }
 
         public MenuViewModel()
         {
+            dbe = new EmployeeApp();
             toProducts = new RelayCommand(ViewProducts);
             toPos = new RelayCommand(ViewPos);
             toSales = new RelayCommand(ViewSales);
@@ -35,6 +40,37 @@ namespace POS
             toTaxes = new RelayCommand(ViewTax);
             toDiscount = new RelayCommand(ViewDicount);
             toDashboards = new RelayCommand(ViewDashBoards);
+            toStocks = new RelayCommand(ViewStocks);
+            btnSignout = new RelayCommand(SignOut);
+            tochangePass = new RelayCommand(ChangePass);
+
+        }
+        void SignOut()
+        {
+            dbe.logOutUser(User.username);
+
+            IocContainer.Kenel.Get<AppViewModel>().CurrentUser.username = string.Empty;
+            IocContainer.Kenel.Get<AppViewModel>().CurrentUser.EmployeeId = null;
+            IocContainer.Kenel.Get<AppViewModel>().NotLogged = true;
+            IocContainer.Kenel.Get<AppViewModel>().Logged = false;
+
+            IocContainer.Kenel.Get<AppViewModel>().CurrentUser.branch_id = null;
+
+            User.branch_id = IocContainer.Kenel.Get<AppViewModel>().CurrentUser.branch_id;
+            User.username = IocContainer.Kenel.Get<AppViewModel>().CurrentUser.username;
+            User.user_id = IocContainer.Kenel.Get<AppViewModel>().CurrentUser.EmployeeId;
+            User.branch_name = IocContainer.Kenel.Get<AppViewModel>().CurrentUser.branch_name;
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.logInPage;
+
+        }
+        private void ChangePass()
+        {
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.changePassPage;
+        }
+        private void ViewStocks()
+        {
+            IocContainer.Kenel.Get<AppViewModel>().CurrentPage = ApplicationPage.stockPage;
+
         }
         private void ViewProducts()
         {

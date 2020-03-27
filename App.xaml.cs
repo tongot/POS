@@ -25,14 +25,14 @@ namespace POS
             //base do
             base.OnStartup(e);
 
-            //splash.Show();
-            //td.Tick += new System.EventHandler(td_tick);
-            //td.Interval = new TimeSpan(0, 0, 3);
-            //td.Start();
+            splash.Show();
+            td.Tick += new System.EventHandler(td_tick);
+            td.Interval = new TimeSpan(0, 0, 3);
+            td.Start();
 
             IocContainer.AppDomainSetup();
-            Current.MainWindow = new MainWindow();
-            Current.MainWindow.Show();
+            //Current.MainWindow = new MainWindow();
+            //Current.MainWindow.Show();
 
             //show the main window
 

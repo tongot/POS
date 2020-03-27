@@ -9,10 +9,10 @@ namespace POS
     public enum ApplicationPage
     {
         logInPage=0,
-        menuPage =1,
+        menuPage=1,
         product =2,
-        category =3,
-        Branches =4,
+        category=3,
+        Branches=4,
         posPage =5,
         salesPage =6,
         employeePage =7,
@@ -23,5 +23,7 @@ namespace POS
         taxPage =12,
         dashboard=13,
         balanceOfEmployee=14,
+        stockPage=15,
+        changePassPage=16,
     }
 }

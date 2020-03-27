@@ -1,5 +1,4 @@
-﻿
-<UserControl x:Class="POS.filterForSales"
+﻿<UserControl x:Class="POS.filterForStock"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,46 +9,49 @@
     <Grid >
         <StackPanel>
             <TextBlock Text="filters" FontSize="20" Foreground="{StaticResource OrangeDarken4Brush}"/>
-            <GroupBox Header="Start date">
-                <StackPanel>
-                    <DatePicker  SelectedDate="{Binding filter.startDate}"/>
-                </StackPanel>
+            <GroupBox Header="Stock Date">
+                <GroupBox Header="Start date">
+                    <StackPanel>
+                        <DatePicker  SelectedDate="{Binding start_date}"/>
+                    </StackPanel>
+                </GroupBox>
             </GroupBox>
+
             <GroupBox Header="End date">
                 <StackPanel>
-                    <DatePicker SelectedDate="{Binding filter.endDate}"/>
+                    <DatePicker SelectedDate="{Binding end_date}"/>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Product Name">
+            <GroupBox Header="Batch Number">
                 <StackPanel>
-                    <TextBox Text="{Binding filter.productName}"/>
+                    <TextBox Text="{Binding batchnumber}"/>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Customer National Id">
+            <GroupBox Header="Product Id">
                 <StackPanel>
-                    <TextBox Text="{Binding filter.customerId}"/>
+                    <TextBox Text="{Binding product_id}"/>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Product code">
+            <GroupBox Header="Branch Name">
                 <StackPanel>
-                    <TextBox Text="{Binding filter.productCode}"/>
+                    <ComboBox ItemsSource="{Binding branches}" 
+                          SelectedItem="{Binding Path= Branch}" 
+                          DisplayMemberPath="Name"/>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Ref number">
+            <!--<GroupBox Header="Ref number">
                 <StackPanel>
                     <TextBox Text="{Binding filter.refNumber}"/>
                 </StackPanel>
-            </GroupBox>
+            </GroupBox>-->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Command="{Binding searchBtn}" Content="Search" Height="35" Background="{StaticResource Primary}" Margin="2"/>
+                <Button Command="{Binding btnSearch}" Content="Search" Height="35" Background="{StaticResource Primary}" Margin="2"/>
                 <Button Content="Clear" Command="{Binding btnClear}" Grid.Column="2" Height="35" Background="{StaticResource Warning}" Margin="2"/>
             </Grid>
         </StackPanel>
     </Grid>
 </UserControl>
-
-    

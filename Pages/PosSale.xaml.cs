@@ -26,7 +26,7 @@ namespace POS
             receipt.printOutReciept += Receipt_printOutReciept;
         }
         List<POSProduct> Cart = new List<POSProduct>();
-        decimal totalPrice,change;
+        decimal totalPrice,change,discount=0,tax=0;
         string teller;
         string refnumber;
 
@@ -37,23 +37,25 @@ namespace POS
             dlg.UserPageRangeEnabled = true;
             PrintDocument doc = new PrintDocument();
 
-            Cart = e._Cart;
+            //Cart = e._Cart;
             totalPrice = e._totalPrice;
             change = e._change;
             teller = e._teller;
-            refnumber = e.refnumber;
+            refnumber = e._refnumber;
+            tax = e._tax;
+            discount = e._discount;
 
             doc.PrintPage += new PrintPageEventHandler(CreateReceipt); //add an event handler that will do the printing
 
             //on a till you will not want to ask the user where to print but this is fine for the test envoironment.
 
-            //Nullable<bool> result = dlg.ShowDialog();
+            Nullable<bool> result = dlg.ShowDialog();
 
-            //if (result == true)
-            //{
+            if (result == true)
+            {
                 doc.Print();
 
-            //}
+            }
         }
         public void CreateReceipt(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
@@ -125,6 +127,14 @@ namespace POS
             pointY += (int)fontheight;
             graphic.DrawString("Change", new Font("Courier New", 10,FontStyle.Bold), new SolidBrush(System.Drawing.Color.Black), pointX, pointY);
             graphic.DrawString(change.ToString(), new Font("Courier New", 10, FontStyle.Bold), new SolidBrush(System.Drawing.Color.Black), 270, pointY);
+
+            pointY += (int)fontheight;
+            graphic.DrawString("Tax", new Font("Courier New", 10, FontStyle.Bold), new SolidBrush(System.Drawing.Color.Black), pointX, pointY);
+            graphic.DrawString(tax.ToString(), new Font("Courier New", 10, FontStyle.Bold), new SolidBrush(System.Drawing.Color.Black), 270, pointY);
+
+            pointY += (int)fontheight;
+            graphic.DrawString("Discount", new Font("Courier New", 10, FontStyle.Bold), new SolidBrush(System.Drawing.Color.Black), pointX, pointY);
+            graphic.DrawString(discount.ToString(), new Font("Courier New", 10, FontStyle.Bold), new SolidBrush(System.Drawing.Color.Black), 270, pointY);
 
             pointY += (int)fontheight;
             graphic.DrawString("...............Thank you.............", new Font("Courier New", 10), new SolidBrush(System.Drawing.Color.Black), pointX, pointY);

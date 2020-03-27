@@ -28,6 +28,12 @@
             <TextBlock FontFamily="{StaticResource GlobalFont}" VerticalAlignment="Center" Margin="4 0 0 0" 
                        Text="{Binding batch_number, FallbackValue='B344029920'}"
                        FontSize="20"/>
+            <TextBlock FontFamily="{StaticResource GlobalFont}" 
+                       VerticalAlignment="Bottom" 
+                       Foreground="{StaticResource Danger}"
+                       HorizontalAlignment="Right"
+                       Text="{Binding date_of_stock, FallbackValue='date'}"
+                       FontSize="15"/>
         </Grid>
         <behaviors:Interaction.Triggers>
             <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=grid}">
